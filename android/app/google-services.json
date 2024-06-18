@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "312987966801",
+    "project_id": "anucivil-f8553",
+    "storage_bucket": "anucivil-f8553.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312987966801:android:6089537dfb74839c9c0770",
+        "android_client_info": {
+          "package_name": "dev.generalist.anucivil_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "312987966801-qrk0fpua0bctkpjermluvltsg256emh7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT3p2IPgLbE2azMZessPTIt08UYgIEjmo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "312987966801-47hvh9a75hu25praqa7isqb3fpfc2pr1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "312987966801-qav521qtsel1174uusvkutpl682gchph.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anucivil.client.clientapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
