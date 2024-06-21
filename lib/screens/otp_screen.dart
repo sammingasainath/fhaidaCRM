@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '/screens/user_details_screen.dart';
+// screens/otp_screen.dart
 
-class OtpScreen extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:anucivil_client/notifiers/otp_notifier.dart';
+import 'package:anucivil_client/services/otp_service.dart';
+
+class OtpScreen extends ConsumerStatefulWidget {
   final String phoneNumber;
   final String verId;
 
@@ -12,24 +15,8 @@ class OtpScreen extends StatefulWidget {
   _OtpScreenState createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _OtpScreenState extends ConsumerState<OtpScreen> {
   TextEditingController _otpController = TextEditingController();
-
-  void _signInWithPhoneNumber(String smsCode, String verId) async {
-    final AuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: verId,
-      smsCode: smsCode,
-    );
-    await FirebaseAuth.instance.signInWithCredential(credential);
-    // Check if user details exist in backend, if not, navigate to details screen
-    // Here, you would typically check Firestore or another database for existing user data
-    // and navigate accordingly.
-    // For simplicity, let's assume direct navigation to the next screen.
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => UserDetailsScreen()),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +38,8 @@ class _OtpScreenState extends State<OtpScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                _signInWithPhoneNumber(_otpController.text, widget.verId);
+                ref.read(authNotifierProvider.notifier).signInWithPhoneNumber(
+                    _otpController.text, widget.verId, context);
               },
               child: Text('Verify OTP'),
             ),

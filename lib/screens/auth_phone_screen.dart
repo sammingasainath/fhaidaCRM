@@ -1,8 +1,9 @@
-import 'package:anucivil_client/screens/dashboard_screen.dart';
+// auth_phone_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'otp_screen.dart'; // Assuming this is the correct import path for OtpScreen
-import 'user_details_screen.dart'; // Importing UserDetailsScreen
+import 'package:anucivil_client/services/otp_service.dart';
+import 'otp_screen.dart';
 
 class AuthPhoneScreen extends StatefulWidget {
   @override
@@ -11,46 +12,34 @@ class AuthPhoneScreen extends StatefulWidget {
 
 class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
   TextEditingController _phoneNumberController = TextEditingController();
+  final AuthService _authService = AuthService();
 
   Future<void> _verifyPhoneNumber(String phoneNumber) async {
     print('Starting phone number verification...'); // Debug statement
 
-    final PhoneVerificationCompleted verified =
-        (PhoneAuthCredential credential) async {
-      print(
-          'Phone number automatically verified and user signed in: $credential');
-      // You can sign in the user automatically if needed:
-      // await FirebaseAuth.instance.signInWithCredential(credential);
-    };
-
-    final PhoneVerificationFailed verificationFailed =
-        (FirebaseAuthException authException) {
-      print(
-          'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}');
-    };
-
-    final PhoneCodeSent smsSent = (String verId, int? forceResend) {
-      print('SMS code sent to $phoneNumber'); // Debug statement
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              OtpScreen(phoneNumber: phoneNumber, verId: verId),
-        ),
-      );
-    };
-
-    final PhoneCodeAutoRetrievalTimeout autoTimeout = (String verId) {
-      print('Auto retrieval timeout'); // Debug statement
-    };
-
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: verified,
-      verificationFailed: verificationFailed,
-      codeSent: smsSent,
-      codeAutoRetrievalTimeout: autoTimeout,
-      timeout: Duration(seconds: 60),
+    _authService.verifyPhoneNumber(
+      phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        print(
+            'Phone number automatically verified and user signed in: $credential');
+      },
+      verificationFailed: (FirebaseAuthException authException) {
+        print(
+            'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}');
+      },
+      codeSent: (String verId, int? forceResend) {
+        print('SMS code sent to $phoneNumber'); // Debug statement
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                OtpScreen(phoneNumber: phoneNumber, verId: verId),
+          ),
+        );
+      },
+      codeAutoRetrievalTimeout: (String verId) {
+        print('Auto retrieval timeout'); // Debug statement
+      },
     );
 
     print('Phone number verification process complete.'); // Debug statement
@@ -60,8 +49,8 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Phone Authentication',
+        title: const Text(
+          'OTP Authentication',
           style: TextStyle(fontFamily: 'Futuristic', color: Colors.tealAccent),
         ),
         backgroundColor: Colors.black,
@@ -132,13 +121,7 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
                   elevation: 10.0,
                 ),
                 onPressed: () {
-                  // _verifyPhoneNumber('+91${_phoneNumberController.text}');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserDetailsScreen(),
-                    ),
-                  );
+                  _verifyPhoneNumber('+91${_phoneNumberController.text}');
                 },
                 child: Text('Verify'),
               ),

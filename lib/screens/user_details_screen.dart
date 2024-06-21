@@ -1,37 +1,25 @@
-import 'package:anucivil_client/screens/dashboard_screen.dart';
+// screens/user_details_screen.dart
+
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:anucivil_client/notifiers/user_details_notifier.dart';
 
-class UserDetailsScreen extends StatelessWidget {
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _companyNameController =
-      TextEditingController(); // Company name controller
+class UserDetailsScreen extends ConsumerStatefulWidget {
+  @override
+  _UserDetailsScreenState createState() => _UserDetailsScreenState();
+}
 
-  Future<void> _saveUserDetails(BuildContext context) async {
-    // Get the currently signed-in user
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      String uid = user.uid;
-      String phoneNumber = user.phoneNumber ?? '';
-
-      // Save user details to Firestore
-      await FirebaseFirestore.instance.collection('users').doc(uid).set({
-        'firstName': _firstNameController.text,
-        'lastName': _lastNameController.text,
-        'email': _emailController.text,
-        'address': _addressController.text,
-        'companyName': _companyNameController.text,
-        'phoneNumber': phoneNumber,
-      });
-
-      // Navigate to dashboard screen
-      Navigator.pushReplacementNamed(context, '/dashboard');
-    }
-  }
+class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _streetController = TextEditingController();
+  final _townController = TextEditingController();
+  final _districtController = TextEditingController();
+  final _stateController = TextEditingController();
+  final _pincodeController = TextEditingController();
+  final _gUrlController = TextEditingController();
+  final _profileImgController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -84,17 +72,22 @@ class UserDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _buildTextField(_firstNameController, 'First Name'),
-              _buildTextField(_lastNameController, 'Last Name'),
+              _buildTextField(_nameController, 'Name'),
               _buildTextField(_emailController, 'Email'),
-              _buildTextField(_addressController, 'Address'),
-              _buildTextField(_companyNameController, 'Company Name'),
+              _buildTextField(_phoneController, 'Phone'),
+              _buildTextField(_streetController, 'Street'),
+              _buildTextField(_townController, 'Town'),
+              _buildTextField(_districtController, 'District'),
+              _buildTextField(_stateController, 'State'),
+              _buildTextField(_pincodeController, 'Pincode'),
+              _buildTextField(_gUrlController, 'Google URL'),
+              _buildTextField(_profileImgController, 'Profile Image URL'),
               SizedBox(height: 20.0),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.tealAccent, // Neon color for button
-                    foregroundColor: Colors.black, // Button text color
+                    backgroundColor: Colors.tealAccent,
+                    foregroundColor: Colors.black,
                     textStyle:
                         TextStyle(fontSize: 18.0, fontFamily: 'Futuristic'),
                     padding:
@@ -105,13 +98,7 @@ class UserDetailsScreen extends StatelessWidget {
                     shadowColor: Colors.tealAccent,
                     elevation: 10.0,
                   ),
-                  onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DashboardScreen()),
-                    )
-                  },
+                  onPressed: () => _saveUserDetails(context),
                   child: Text('Save Details'),
                 ),
               ),
@@ -130,9 +117,8 @@ class UserDetailsScreen extends StatelessWidget {
         style: TextStyle(color: Colors.white, fontFamily: 'Futuristic'),
         decoration: InputDecoration(
           labelText: labelText,
-          labelStyle: TextStyle(
-              color: Colors.tealAccent,
-              fontFamily: 'Futuristic'), // Neon color for labels
+          labelStyle:
+              TextStyle(color: Colors.tealAccent, fontFamily: 'Futuristic'),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.tealAccent),
           ),
@@ -144,5 +130,21 @@ class UserDetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _saveUserDetails(BuildContext context) {
+    ref.read(userDetailsNotifierProvider.notifier).saveUserDetails(
+          name: _nameController.text,
+          email: _emailController.text,
+          phone: _phoneController.text,
+          street: _streetController.text,
+          town: _townController.text,
+          district: _districtController.text,
+          state: _stateController.text,
+          pincode: _pincodeController.text,
+          gUrl: _gUrlController.text,
+          profileImg: _profileImgController.text,
+          context: context,
+        );
   }
 }
