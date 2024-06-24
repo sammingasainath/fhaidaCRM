@@ -12,7 +12,7 @@ class DashboardScreen extends ConsumerWidget {
       length: DashboardTab.values.length,
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(3),
+          preferredSize: Size.fromHeight(0),
           child: Container(
             color: Colors.black,
           ), // Empty container to remove the default AppBar
@@ -22,10 +22,10 @@ class DashboardScreen extends ConsumerWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.tealAccent.withOpacity(0.5),
+                    color: Colors.black.withOpacity(0.1),
                     blurRadius: 8.0,
                   ),
                 ],
@@ -35,11 +35,6 @@ class DashboardScreen extends ConsumerWidget {
                     top: 16.0), // Adjust top padding as needed
                 child: Column(
                   children: [
-                    SearchNavbar(
-                      onSearchChanged: (value) {
-                        // Handle search functionality
-                      },
-                    ),
                     SizedBox(height: 8.0), // Adjust as needed
                     TabBarWidget(),
                   ],
@@ -81,35 +76,55 @@ class DashboardScreen extends ConsumerWidget {
 class TabBarWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.tealAccent.withOpacity(0.5),
-              blurRadius: 8.0,
+    final projectListAsyncValue = ref.watch(projectListProvider);
+
+    return projectListAsyncValue.when(
+      data: (projects) {
+        int allCount = projects.length;
+        int completedCount =
+            projects.where((p) => p.status == 'reportRecieved').length;
+        int inProgressCount =
+            projects.where((p) => p.status == 'Sampling In Process').length;
+        int pendingCount =
+            projects.where((p) => p.status == 'Action Required').length;
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8.0,
+                ),
+              ],
             ),
-          ],
-        ),
-        child: TabBar(
-          isScrollable: true, // Ensure TabBar is scrollable
-          indicatorColor: Colors.tealAccent,
-          labelColor: Colors.tealAccent,
-          unselectedLabelColor: Colors.white,
-          tabs: [
-            Tab(text: 'All'),
-            Tab(text: 'In Progress'),
-            Tab(text: 'Completed'),
-            Tab(text: 'Pending'),
-          ],
-          onTap: (index) {
-            ref.read(dashboardTabProvider.notifier).state =
-                DashboardTab.values[index];
-          },
-        ),
-      ),
+            child: TabBar(
+              isScrollable: true, // Ensure TabBar is scrollable
+              indicatorColor: Colors.tealAccent,
+              indicatorWeight: 4.0,
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.black.withOpacity(0.6),
+              labelStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+              tabs: [
+                Tab(text: 'All ($allCount)'),
+                Tab(text: 'In Progress ($inProgressCount)'),
+                Tab(text: 'Completed ($completedCount)'),
+                Tab(text: 'Pending ($pendingCount)'),
+              ],
+              onTap: (index) {
+                ref.read(dashboardTabProvider.notifier).state =
+                    DashboardTab.values[index];
+              },
+            ),
+          ),
+        );
+      },
+      loading: () => Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
 }
