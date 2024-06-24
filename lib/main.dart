@@ -1,9 +1,10 @@
-import 'package:anucivil_client/screens/splash_screen.dart';
-import 'package:anucivil_client/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'providers/shared_provider.dart'; // Import the provider setup
+import 'screens/splash_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/auth_phone_screen.dart'; // Ensure you import your other screens
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,43 +12,37 @@ void main() async {
   runApp(ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authStateChanges = ref.watch(authStateChangesProvider);
+
     return MaterialApp(
       title: 'Your App Name',
       theme: ThemeData(
         primarySwatch: Colors.teal,
         fontFamily: 'Futuristic',
       ),
-      home: AppInitializer(), // Check user authentication status first
+      home: authStateChanges.when(
+        data: (user) {
+          if (user != null) {
+            return DashboardScreen(); // User authenticated, navigate to Dashboard
+          } else {
+            return AuthPhoneScreen(); // User not authenticated, navigate to AuthPhoneScreen
+          }
+        },
+        loading: () =>
+            SplashScreen(), // Show SplashScreen while checking auth state
+        error: (err, stack) =>
+            SplashScreen(), // Handle error state, you can customize this
+      ),
       routes: {
-        '/dashboard': (context) =>
-            DashboardScreen(), // Define your dashboard route
+        '/dashboard': (context) => DashboardScreen(),
+        // Add other routes here
       },
       onUnknownRoute: (settings) {
         // Handle unknown routes here
         return MaterialPageRoute(builder: (context) => SplashScreen());
-      },
-    );
-  }
-}
-
-class AppInitializer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: FirebaseAuth.instance.authStateChanges().first,
-      builder: (context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return SplashScreen(); // Show SplashScreen while checking auth state
-        } else {
-          if (snapshot.hasData && snapshot.data != null) {
-            return DashboardScreen(); // User authenticated, navigate to Dashboard
-          } else {
-            return SplashScreen(); // User not authenticated, show SplashScreen
-          }
-        }
       },
     );
   }

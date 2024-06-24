@@ -1,7 +1,7 @@
 // notifiers/user_details_notifier.dart
 
 import 'package:flutter/material.dart';
-import 'package:anucivil_client/providers/provider_setup.dart';
+import 'package:anucivil_client/providers/shared_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:anucivil_client/services/user_details_service.dart';
 
