@@ -51,7 +51,7 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavBar(),
+        // bottomNavigationBar: BottomNavBar(),
       ),
     );
   }
@@ -102,7 +102,7 @@ class TabBarWidget extends ConsumerWidget {
             ),
             child: TabBar(
               isScrollable: true, // Ensure TabBar is scrollable
-              indicatorColor: Colors.tealAccent,
+              indicatorColor: Color.fromARGB(255, 158, 15, 235),
               indicatorWeight: 4.0,
               labelColor: Colors.black,
               unselectedLabelColor: Colors.black.withOpacity(0.6),

@@ -1,19 +1,20 @@
-// notifiers/user_details_notifier.dart
-
 import 'package:flutter/material.dart';
 import 'package:anucivil_client/providers/shared_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:anucivil_client/services/user_details_service.dart';
+import '/providers/shared_provider.dart';
 
-final userDetailsNotifierProvider = StateNotifierProvider<UserDetailsNotifier, void>((ref) {
+final userDetailsNotifierProvider =
+    StateNotifierProvider<UserDetailsNotifier, void>((ref) {
   final userDetailsService = ref.watch(userDetailsServiceProvider);
-  return UserDetailsNotifier(userDetailsService);
+  return UserDetailsNotifier(userDetailsService, ref);
 });
 
 class UserDetailsNotifier extends StateNotifier<void> {
   final UserDetailsService _userDetailsService;
+  final Ref _ref;
 
-  UserDetailsNotifier(this._userDetailsService) : super(null);
+  UserDetailsNotifier(this._userDetailsService, this._ref) : super(null);
 
   Future<void> saveUserDetails({
     required String name,
@@ -41,6 +42,11 @@ class UserDetailsNotifier extends StateNotifier<void> {
         gUrl: gUrl,
         profileImg: profileImg,
       );
+
+      // Update the user details completion state
+      _ref.read(userDetailsCompleteProvider.notifier).checkUserDetails();
+
+      // Navigate to the dashboard
       Navigator.pushReplacementNamed(context, '/dashboard');
     } catch (e) {
       _showErrorDialog(context, e.toString());

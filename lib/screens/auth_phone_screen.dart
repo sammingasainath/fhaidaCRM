@@ -1,7 +1,6 @@
-// auth_phone_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:anucivil_client/services/otp_service.dart';
 import 'otp_screen.dart';
 
@@ -12,13 +11,14 @@ class AuthPhoneScreen extends StatefulWidget {
 
 class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
   TextEditingController _phoneNumberController = TextEditingController();
+  CountryCode _countryCode = CountryCode(code: '+91', name: 'India');
   final AuthService _authService = AuthService();
 
   Future<void> _verifyPhoneNumber(String phoneNumber) async {
     print('Starting phone number verification...'); // Debug statement
 
     _authService.verifyPhoneNumber(
-      phoneNumber,
+      '${_countryCode.dialCode}${phoneNumber}',
       verificationCompleted: (PhoneAuthCredential credential) async {
         print(
             'Phone number automatically verified and user signed in: $credential');
@@ -28,12 +28,14 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
             'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}');
       },
       codeSent: (String verId, int? forceResend) {
-        print('SMS code sent to $phoneNumber'); // Debug statement
+        print(
+            'SMS code sent to ${_countryCode.dialCode}$phoneNumber'); // Debug statement
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                OtpScreen(phoneNumber: phoneNumber, verId: verId),
+            builder: (context) => OtpScreen(
+                phoneNumber: '+${_countryCode.dialCode}${phoneNumber}',
+                verId: verId),
           ),
         );
       },
@@ -84,26 +86,46 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.all(20.0),
-                child: TextField(
-                  controller: _phoneNumberController,
-                  style:
-                      TextStyle(color: Colors.white, fontFamily: 'Futuristic'),
-                  decoration: InputDecoration(
-                    hintText: '+91 1234567890',
-                    hintStyle: TextStyle(color: Colors.tealAccent),
-                    labelText: 'Enter your phone number',
-                    labelStyle: TextStyle(
-                        color: Colors.tealAccent, fontFamily: 'Futuristic'),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.tealAccent),
+                child: Row(
+                  children: <Widget>[
+                    CountryCodePicker(
+                      onChanged: (CountryCode countryCode) {
+                        setState(() {
+                          _countryCode = countryCode;
+                        });
+                      },
+                      initialSelection: _countryCode.dialCode,
+                      favorite: ['+39', 'IN'],
+                      showCountryOnly: false,
+                      showOnlyCountryWhenClosed: false,
+                      alignLeft: false,
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.tealAccent, width: 2.0),
+                    SizedBox(width: 10.0),
+                    Expanded(
+                      child: TextField(
+                        controller: _phoneNumberController,
+                        style: TextStyle(
+                            color: Colors.white, fontFamily: 'Futuristic'),
+                        decoration: InputDecoration(
+                          hintText: '1234567890',
+                          hintStyle: TextStyle(color: Colors.tealAccent),
+                          labelText: 'Enter your phone number',
+                          labelStyle: TextStyle(
+                              color: Colors.tealAccent,
+                              fontFamily: 'Futuristic'),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.tealAccent),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.tealAccent, width: 2.0),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[850],
+                        ),
+                      ),
                     ),
-                    filled: true,
-                    fillColor: Colors.grey[850],
-                  ),
+                  ],
                 ),
               ),
               ElevatedButton(
@@ -121,7 +143,7 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
                   elevation: 10.0,
                 ),
                 onPressed: () {
-                  _verifyPhoneNumber('+91${_phoneNumberController.text}');
+                  _verifyPhoneNumber(_phoneNumberController.text);
                 },
                 child: Text('Verify'),
               ),

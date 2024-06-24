@@ -1,10 +1,14 @@
 // services/user_details_service.dart
 
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDetailsService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  User? user = FirebaseAuth.instance.currentUser;
+  String? phonenum = FirebaseAuth.instance.currentUser?.phoneNumber;
 
   Future<void> saveUserDetails({
     required String name,
@@ -25,7 +29,7 @@ class UserDetailsService {
       await _firestore.collection('users').doc(uid).set({
         'name': name,
         'email': email,
-        'phone': phone,
+        'phone': phonenum,
         'address': {
           'street': street,
           'town': town,
