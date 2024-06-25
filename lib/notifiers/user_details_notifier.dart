@@ -47,7 +47,7 @@ class UserDetailsNotifier extends StateNotifier<void> {
       _ref.read(userDetailsCompleteProvider.notifier).checkUserDetails();
 
       // Navigate to the dashboard
-      Navigator.pushReplacementNamed(context, '/dashboard');
+      Navigator.pushReplacementNamed(context, '/');
     } catch (e) {
       _showErrorDialog(context, e.toString());
     }

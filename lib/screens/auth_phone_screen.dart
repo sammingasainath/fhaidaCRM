@@ -1,50 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:anucivil_client/services/otp_service.dart';
 import 'otp_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthPhoneScreen extends StatefulWidget {
+class AuthPhoneScreen extends ConsumerStatefulWidget {
   @override
   _AuthPhoneScreenState createState() => _AuthPhoneScreenState();
 }
 
-class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
+class _AuthPhoneScreenState extends ConsumerState<AuthPhoneScreen> {
   TextEditingController _phoneNumberController = TextEditingController();
-  CountryCode _countryCode = CountryCode(code: '+91', name: 'India');
-  final AuthService _authService = AuthService();
+  CountryCode _countryCode = CountryCode(
+    dialCode: '+91',
+  );
 
-  Future<void> _verifyPhoneNumber(String phoneNumber) async {
-    print('Starting phone number verification...'); // Debug statement
+  Future<void> _verifyPhoneNumber(BuildContext context) async {
+    final String phoneNumber =
+        '${_countryCode.dialCode}${_phoneNumberController.text}';
+    final authService = ref.read(authServiceProvider);
 
-    _authService.verifyPhoneNumber(
-      '${_countryCode.dialCode}${phoneNumber}',
+    await authService.verifyPhoneNumber(
+      phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        print(
-            'Phone number automatically verified and user signed in: $credential');
+        // Handle auto sign-in
       },
       verificationFailed: (FirebaseAuthException authException) {
-        print(
-            'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Verification failed: ${authException.message}')),
+        );
       },
       codeSent: (String verId, int? forceResend) {
-        print(
-            'SMS code sent to ${_countryCode.dialCode}$phoneNumber'); // Debug statement
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => OtpScreen(
-                phoneNumber: '+${_countryCode.dialCode}${phoneNumber}',
-                verId: verId),
+              phoneNumber: phoneNumber,
+              verId: verId,
+            ),
           ),
         );
       },
       codeAutoRetrievalTimeout: (String verId) {
-        print('Auto retrieval timeout'); // Debug statement
+        // Handle auto retrieval timeout
       },
     );
-
-    print('Phone number verification process complete.'); // Debug statement
   }
 
   @override
@@ -95,10 +97,14 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
                         });
                       },
                       initialSelection: _countryCode.dialCode,
-                      favorite: ['+39', 'IN'],
+                      favorite: ['+1', 'US'],
                       showCountryOnly: false,
                       showOnlyCountryWhenClosed: false,
                       alignLeft: false,
+                      textStyle: TextStyle(
+                        color: Colors.tealAccent,
+                        fontFamily: 'Futuristic',
+                      ),
                     ),
                     SizedBox(width: 10.0),
                     Expanded(
@@ -143,7 +149,7 @@ class _AuthPhoneScreenState extends State<AuthPhoneScreen> {
                   elevation: 10.0,
                 ),
                 onPressed: () {
-                  _verifyPhoneNumber(_phoneNumberController.text);
+                  _verifyPhoneNumber(context);
                 },
                 child: Text('Verify'),
               ),

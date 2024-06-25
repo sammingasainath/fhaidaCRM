@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 class UserDetailsService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
-  String? phonenum = FirebaseAuth.instance.currentUser?.phoneNumber;
 
   Future<void> saveUserDetails({
     required String name,
@@ -29,7 +28,7 @@ class UserDetailsService {
       await _firestore.collection('users').doc(uid).set({
         'name': name,
         'email': email,
-        'phone': phonenum,
+        'phone': phone,
         'address': {
           'street': street,
           'town': town,
@@ -39,6 +38,7 @@ class UserDetailsService {
           'gUrl': gUrl,
         },
         'profileImg': profileImg,
+        'UserID': uid
       });
     }
   }
