@@ -11,7 +11,7 @@ import 'screens/splash_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/auth_phone_screen.dart'; // Ensure you import your other screens
 import 'widgets/bottomNavbar.dart';
-import 'screens/user_details_screen.dart'; // Add this import
+// Add this import
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
