@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/project.dart';
-import './circularProgressIndicator.dart'; // Import the new file
-import '../services/project_status_service.dart'; // Import the services file
+import '../services/project_status_service.dart';
+import '../widgets/circularProgressIndicator.dart';
+import '../screens/projects_detail_screen.dart';
 
 class ProjectCard extends StatelessWidget {
   final Project project;
@@ -11,100 +12,112 @@ class ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: Colors.grey.shade300, width: 1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      _buildStatusIcon(project.status),
-                      const SizedBox(width: 8.0),
-                      Expanded(
-                        child: Text(
-                          project.name,
-                          style: GoogleFonts.roboto(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UpdatesScreen(project: project),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.grey.shade300, width: 1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        _buildStatusIcon(project.status),
+                        const SizedBox(width: 8.0),
+                        Expanded(
+                          child: Text(
+                            project.name,
+                            style: GoogleFonts.roboto(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    '${project.location}, AP',
-                    style: GoogleFonts.roboto(
-                      fontSize: 14,
-                      color: Colors.black54,
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Agreed Fees:',
-                            style: GoogleFonts.roboto(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            '₹ ${project.paymentDue}',
-                            style: GoogleFonts.roboto(
-                              fontSize: 14,
-                              color: ProjectStatusService.getColorBasedOnStatus(
-                                  project.status,
-                                  isAmount: true),
-                            ),
-                          ),
-                        ],
+                    SizedBox(height: 8.0),
+                    Text(
+                      '${project.location}, AP',
+                      style: GoogleFonts.roboto(
+                        fontSize: 14,
+                        color: Colors.black54,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Delivery Date:',
-                            style: GoogleFonts.roboto(
-                              fontSize: 14,
-                              color: Colors.black,
+                    ),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Agreed Fees:',
+                              style: GoogleFonts.roboto(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                          Text(
-                            project.status == 'reportRecieved'
-                                ? '22 June'
-                                : 'TBD',
-                            style: GoogleFonts.roboto(
-                              fontSize: 14,
-                              color: ProjectStatusService.getColorBasedOnStatus(
-                                  project.status,
-                                  isAmount: false),
+                            Text(
+                              '₹ ${project.paymentDue}',
+                              style: GoogleFonts.roboto(
+                                fontSize: 14,
+                                color:
+                                    ProjectStatusService.getColorBasedOnStatus(
+                                        project.status,
+                                        isAmount: true),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Delivery Date:',
+                              style: GoogleFonts.roboto(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              project.status == 'reportRecieved'
+                                  ? '22 June'
+                                  : 'TBD',
+                              style: GoogleFonts.roboto(
+                                fontSize: 14,
+                                color:
+                                    ProjectStatusService.getColorBasedOnStatus(
+                                        project.status,
+                                        isAmount: false),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            _buildStatusBar(project.status),
-          ],
+              _buildStatusBar(project.status),
+            ],
+          ),
         ),
       ),
     );

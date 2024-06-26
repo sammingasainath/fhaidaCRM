@@ -19,7 +19,7 @@ class CircularProgressIndicatorWithPercentage extends StatelessWidget {
         Text(
           '${(progress * 100).toInt()}%',
           style: TextStyle(
-            fontSize: 10,
+            fontSize: 14,
             color: color,
             fontWeight: FontWeight.bold,
           ),
