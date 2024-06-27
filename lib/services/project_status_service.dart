@@ -5,11 +5,17 @@ class ProjectStatusService {
   static double getProgress(String status) {
     switch (status) {
       case 'reportRecieved':
-        return 1.0;
+        return 0.90;
       case 'Sampling In Process':
+      case 'Quotation Accepted':
+      case 'Sent To Lab':
         return 0.75;
       case 'Action Required':
+      case 'Quotation Requested':
+      case 'Quotation Sent':
         return 0.5;
+      case 'reportShipped':
+        return 1.0;
       default:
         return 0.25;
     }
@@ -20,9 +26,15 @@ class ProjectStatusService {
       case 'reportRecieved':
         return Colors.green;
       case 'Sampling In Process':
+      case 'Quotation Accepted':
+      case 'Sent To Lab':
         return isAmount ? Colors.green : Colors.brown;
       case 'Action Required':
+      case 'Quotation Requested':
+      case 'Quotation Sent':
         return isAmount ? Colors.green : Colors.red;
+      case 'reportShipped':
+        return Colors.lightBlue;
       default:
         return Colors.black;
     }
@@ -33,9 +45,15 @@ class ProjectStatusService {
       case 'reportRecieved':
         return Colors.green;
       case 'Sampling In Process':
+      case 'Quotation Accepted':
+      case 'Sent To Lab':
         return Colors.orange;
       case 'Action Required':
+      case 'Quotation Requested':
+      case 'Quotation Sent':
         return Colors.red;
+      case 'reportShipped':
+        return Colors.lightBlue;
       default:
         return Colors.grey;
     }
@@ -49,6 +67,16 @@ class ProjectStatusService {
         return 'Sampling In Process';
       case 'Action Required':
         return 'Action Required';
+      case 'Quotation Accepted':
+        return 'Going To Start Work';
+      case 'Sent To Lab':
+        return 'Lab Tests Going On';
+      case 'reportShipped':
+        return 'Reports on their way';
+      case 'Quotation Sent':
+        return 'Accept Quotation';
+      case 'Quotation Requested':
+        return 'Preparing a Quotation for You';
       default:
         return 'Unknown Status';
     }
@@ -64,9 +92,20 @@ class ProjectStatusService {
           'lib/assets/shovel.svg',
           height: size,
           width: size,
+          color: color,
         );
       case 'Action Required':
         return Icon(Icons.warning, size: size, color: color);
+      case 'Quotation Accepted':
+        return Icon(Icons.check_circle, size: size, color: color);
+      case 'Sent To Lab':
+        return Icon(Icons.science, size: size, color: color);
+      case 'reportShipped':
+        return Icon(Icons.local_shipping, size: size, color: color);
+      case 'Quotation Sent':
+        return Icon(Icons.description, size: size, color: color);
+      case 'Quotation Requested':
+        return Icon(Icons.request_quote, size: size, color: color);
       default:
         return Icon(Icons.info, size: size, color: color);
     }

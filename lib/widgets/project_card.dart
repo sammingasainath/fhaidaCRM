@@ -54,7 +54,7 @@ class ProjectCard extends StatelessWidget {
                     ),
                     SizedBox(height: 8.0),
                     Text(
-                      '${project.location}, AP',
+                      '${project.location},',
                       style: GoogleFonts.roboto(
                         fontSize: 14,
                         color: Colors.black54,

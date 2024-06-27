@@ -83,10 +83,20 @@ class TabBarWidget extends ConsumerWidget {
         int allCount = projects.length;
         int completedCount =
             projects.where((p) => p.status == 'reportRecieved').length;
-        int inProgressCount =
-            projects.where((p) => p.status == 'Sampling In Process').length;
-        int pendingCount =
-            projects.where((p) => p.status == 'Action Required').length;
+        int inProgressCount = projects
+            .where((p) =>
+                p.status == 'Sampling In Process' ||
+                p.status == 'Quotation Accepted' ||
+                p.status == 'Sent To Lab')
+            .length;
+        int pendingCount = projects
+            .where((p) =>
+                p.status == 'Action Required' ||
+                p.status == 'Quotation Requested' ||
+                p.status == 'Quotation Sent')
+            .length;
+        int shippedCount =
+            projects.where((p) => p.status == 'reportShipped').length;
 
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -114,6 +124,7 @@ class TabBarWidget extends ConsumerWidget {
                 Tab(text: 'In Progress ($inProgressCount)'),
                 Tab(text: 'Completed ($completedCount)'),
                 Tab(text: 'Pending ($pendingCount)'),
+                Tab(text: 'Shipped ($shippedCount)'),
               ],
               onTap: (index) {
                 ref.read(dashboardTabProvider.notifier).state =
