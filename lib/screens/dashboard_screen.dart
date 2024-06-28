@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/project_provider.dart';
+import '../notifiers/last_selected_tab_notifier.dart';
 import '../widgets/project_card.dart';
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Refresh the project list provider when the screen is built
-    ref.refresh(projectListProvider);
+  _DashboardScreenState createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lastSelectedTabIndex = ref.watch(lastSelectedTabProvider);
 
     return DefaultTabController(
       length: DashboardTab.values.length,
+      initialIndex: lastSelectedTabIndex,
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(0),
@@ -33,8 +44,7 @@ class DashboardScreen extends ConsumerWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.only(
-                  top: 16.0,
-                ), // Adjust top padding as needed
+                    top: 16.0), // Adjust top padding as needed
                 child: Column(
                   children: [
                     const Text(
@@ -45,7 +55,6 @@ class DashboardScreen extends ConsumerWidget {
                         fontSize: 22,
                       ),
                     ),
-                    // Adjust as needed
                     TabBarWidget(),
                   ],
                 ),
@@ -140,6 +149,7 @@ class TabBarWidget extends ConsumerWidget {
               onTap: (index) {
                 ref.read(dashboardTabProvider.notifier).state =
                     DashboardTab.values[index];
+                ref.read(lastSelectedTabProvider.notifier).setTabIndex(index);
               },
             ),
           ),
