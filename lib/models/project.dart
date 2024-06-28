@@ -10,7 +10,6 @@ class Update {
       id: data['id'],
       title: data['title'],
       date: data['date'],
-      
     );
   }
 
@@ -30,17 +29,20 @@ class Project {
   final int? paymentDue;
   final int? paymentReceived;
   final String status;
+  final String? quotationUrl;
+  final String? reportUrl;
   final List<Update> updates;
 
-  Project({
-    required this.id,
-    required this.location,
-    required this.name,
-    required this.paymentDue,
-    required this.paymentReceived,
-    required this.status,
-    required this.updates,
-  });
+  Project(
+      {required this.id,
+      required this.location,
+      required this.name,
+      required this.paymentDue,
+      required this.paymentReceived,
+      required this.status,
+      required this.updates,
+      this.quotationUrl,
+      this.reportUrl});
 
   factory Project.fromMap(String id, Map<String, dynamic> data) {
     var updatesFromMap = (data['updates'] as List<dynamic>)
@@ -55,6 +57,8 @@ class Project {
       paymentReceived: data['paymentReceived'],
       status: data['status'],
       updates: updatesFromMap,
+      quotationUrl: data['quotationUrl'],
+      reportUrl: data['reportUrl'],
     );
   }
 

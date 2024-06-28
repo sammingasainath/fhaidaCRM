@@ -27,26 +27,29 @@ class ProjectCardComp extends StatelessWidget {
                     children: [
                       _buildStatusIcon(project.status),
                       const SizedBox(width: 8.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            project.name,
-                            style: GoogleFonts.roboto(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              project.name,
+                              style: GoogleFonts.roboto(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
-                          ),
-                          // SizedBox(height: 2.0),
-                          Text(
-                            '${project.location}, AP',
-                            style: GoogleFonts.roboto(
-                              fontSize: 14,
-                              color: Colors.black54,
+                            Text(
+                              '${project.location}, AP',
+                              style: GoogleFonts.roboto(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       )
                     ],
                   ),

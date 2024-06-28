@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/project_provider.dart';
-import '../widgets/bottomNavbar.dart';
-import '../widgets/searchNavbar.dart';
 import '../widgets/project_card.dart';
 
 class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Refresh the project list provider when the screen is built
+    ref.refresh(projectListProvider);
+
     return DefaultTabController(
       length: DashboardTab.values.length,
       child: Scaffold(
@@ -32,10 +33,19 @@ class DashboardScreen extends ConsumerWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.only(
-                    top: 16.0), // Adjust top padding as needed
+                  top: 16.0,
+                ), // Adjust top padding as needed
                 child: Column(
                   children: [
-                    SizedBox(height: 8.0), // Adjust as needed
+                    const Text(
+                      'Your Projects',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                    // Adjust as needed
                     TabBarWidget(),
                   ],
                 ),
@@ -51,7 +61,6 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ],
         ),
-        // bottomNavigationBar: BottomNavBar(),
       ),
     );
   }
@@ -87,13 +96,15 @@ class TabBarWidget extends ConsumerWidget {
             .where((p) =>
                 p.status == 'Sampling In Process' ||
                 p.status == 'Quotation Accepted' ||
-                p.status == 'Sent To Lab')
+                p.status == 'Sent To Lab' ||
+                p.status == 'reportReviewRequired')
             .length;
         int pendingCount = projects
             .where((p) =>
                 p.status == 'Action Required' ||
                 p.status == 'Quotation Requested' ||
-                p.status == 'Quotation Sent')
+                p.status == 'Quotation Sent' ||
+                p.status == 'quotationReviewRequired')
             .length;
         int shippedCount =
             projects.where((p) => p.status == 'reportShipped').length;

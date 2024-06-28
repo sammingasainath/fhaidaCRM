@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/project.dart';
-import '../services/color_call_to_action_functions.dart';
+import '../services/function_call_to_action_functions.dart';
 
 class CallToActionContainer extends StatelessWidget {
   final Project project;
@@ -9,7 +9,8 @@ class CallToActionContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final callToAction = getCallToAction(project.status);
+    final callToAction = getCallToAction(project.status, context,
+        project.quotationUrl!, project.reportUrl, project.id);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(

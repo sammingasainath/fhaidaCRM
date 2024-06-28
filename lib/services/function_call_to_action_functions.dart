@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/show_pdf_modal.dart';
+
+import '../services/update_project_status_client.dart';
 
 class CallToAction {
   final LinearGradient gradient;
@@ -28,7 +32,8 @@ class CallToActionButton {
   });
 }
 
-CallToAction getCallToAction(String status) {
+CallToAction getCallToAction(String status, BuildContext context,
+    String quotationUrl, String? reportUrl, String projectId) {
   switch (status) {
     case 'Action Required':
       return CallToAction(
@@ -53,9 +58,18 @@ CallToAction getCallToAction(String status) {
         message: 'Quotation has been requested.',
         buttons: [],
       );
+    case 'quotationReviewRequired':
+      return CallToAction(
+        gradient: LinearGradient(
+            colors: [Colors.orange.shade300, Colors.orange.shade600]),
+        textColor: Colors.white,
+        message: 'Reviewing The Quotation Upon Your Request.',
+        buttons: [],
+      );
+
     case 'Quotation Sent':
       return CallToAction(
-        gradient: LinearGradient(colors: [
+        gradient: const LinearGradient(colors: [
           Color.fromARGB(255, 255, 180, 66),
           Color.fromARGB(255, 255, 171, 103)
         ]),
@@ -65,15 +79,29 @@ CallToAction getCallToAction(String status) {
         buttons: [
           CallToActionButton(
             text: 'Confirm Quotation',
-            action: () {},
-            color: Color.fromARGB(255, 240, 114, 5),
+            action: () {
+              updateProjectStatus(projectId, 'Quotation Accepted');
+              Navigator.pushReplacementNamed(context, '/');
+            },
+            color: const Color.fromARGB(255, 240, 114, 5),
             textColor: Colors.white,
           ),
           CallToActionButton(
             text: 'View Quotation',
-            action: () {},
+            action: () => viewQuotation(context, quotationUrl),
             color: Colors.grey.shade300,
             textColor: Colors.black,
+          ),
+          CallToActionButton(
+            text: 'Review Quotation',
+            action: () => popDialog(
+                context,
+                projectId,
+                'Review Quotation',
+                'Call Now to Clarify the Quotation !',
+                'quotationReviewRequired'),
+            color: Color.fromARGB(255, 246, 151, 151),
+            textColor: Color.fromARGB(255, 112, 4, 4),
           ),
         ],
       );
@@ -110,7 +138,7 @@ CallToAction getCallToAction(String status) {
         buttons: [
           CallToActionButton(
             text: 'View Report',
-            action: () {},
+            action: () => viewQuotation(context, reportUrl!),
             color: Colors.white,
             textColor: Colors.teal.shade700,
           ),
@@ -120,7 +148,22 @@ CallToAction getCallToAction(String status) {
             color: Colors.teal.shade700,
             textColor: Colors.white,
           ),
+          CallToActionButton(
+            text: 'Review Report',
+            action: () => popDialog(context, projectId, 'Review Repoet',
+                'Call Now to Clarify the Report !', 'reportReviewRequired'),
+            color: Color.fromARGB(255, 255, 255, 255),
+            textColor: Colors.teal.shade700,
+          ),
         ],
+      );
+    case 'reportReviewRequired':
+      return CallToAction(
+        gradient: LinearGradient(
+            colors: [Colors.purple.shade300, Colors.purple.shade600]),
+        textColor: Colors.white,
+        message: 'Reviewing Report According to Revised Requirements',
+        buttons: [],
       );
     case 'reportShipped':
       return CallToAction(
@@ -128,7 +171,14 @@ CallToAction getCallToAction(String status) {
             colors: [Colors.brown.shade300, Colors.brown.shade600]),
         textColor: Colors.white,
         message: 'The report has been shipped.',
-        buttons: [],
+        buttons: [
+          CallToActionButton(
+            text: 'Track Report',
+            action: () => {},
+            color: Color.fromARGB(255, 255, 255, 255),
+            textColor: Colors.teal.shade700,
+          ),
+        ],
       );
     default:
       return CallToAction(

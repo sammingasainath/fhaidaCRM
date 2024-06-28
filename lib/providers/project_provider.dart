@@ -27,7 +27,8 @@ final filteredProjectListProvider = Provider<AsyncValue<List<Project>>>((ref) {
             .where((project) =>
                 project.status == 'Sampling In Process' ||
                 project.status == 'Quotation Accepted' ||
-                project.status == 'Sent To Lab')
+                project.status == 'Sent To Lab' ||
+                project.status == 'reportReviewRequired')
             .toList();
       case DashboardTab.completed:
         return projects
@@ -38,7 +39,8 @@ final filteredProjectListProvider = Provider<AsyncValue<List<Project>>>((ref) {
             .where((project) =>
                 project.status == 'Action Required' ||
                 project.status == 'Quotation Requested' ||
-                project.status == 'Quotation Sent')
+                project.status == 'Quotation Sent' ||
+                project.status == 'quotationReviewRequired')
             .toList();
 
       case DashboardTab.shipped:

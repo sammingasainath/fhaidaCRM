@@ -9,10 +9,12 @@ class ProjectStatusService {
       case 'Sampling In Process':
       case 'Quotation Accepted':
       case 'Sent To Lab':
+      case 'reportReviewRequired':
         return 0.75;
       case 'Action Required':
       case 'Quotation Requested':
       case 'Quotation Sent':
+      case 'quotationReviewRequired':
         return 0.5;
       case 'reportShipped':
         return 1.0;
@@ -28,10 +30,12 @@ class ProjectStatusService {
       case 'Sampling In Process':
       case 'Quotation Accepted':
       case 'Sent To Lab':
+      case 'reportReviewRequired':
         return isAmount ? Colors.green : Colors.brown;
       case 'Action Required':
       case 'Quotation Requested':
       case 'Quotation Sent':
+      case 'quotationReviewRequired':
         return isAmount ? Colors.green : Colors.red;
       case 'reportShipped':
         return Colors.lightBlue;
@@ -47,10 +51,12 @@ class ProjectStatusService {
       case 'Sampling In Process':
       case 'Quotation Accepted':
       case 'Sent To Lab':
+      case 'reportReviewRequired':
         return Colors.orange;
       case 'Action Required':
       case 'Quotation Requested':
       case 'Quotation Sent':
+      case 'quotationReviewRequired':
         return Colors.red;
       case 'reportShipped':
         return Colors.lightBlue;
@@ -75,8 +81,12 @@ class ProjectStatusService {
         return 'Reports on their way';
       case 'Quotation Sent':
         return 'Accept Quotation';
+      case 'quotationReviewRequired':
+        return 'Reviewing the Quotation for You';
       case 'Quotation Requested':
         return 'Preparing a Quotation for You';
+      case 'reportReviewRequired':
+        return 'Preparing revised Report';
       default:
         return 'Unknown Status';
     }
@@ -106,6 +116,10 @@ class ProjectStatusService {
         return Icon(Icons.description, size: size, color: color);
       case 'Quotation Requested':
         return Icon(Icons.request_quote, size: size, color: color);
+      case 'quotationReviewRequired':
+        return Icon(Icons.replay_circle_filled_sharp, size: size, color: color);
+      case 'reportReviewRequired':
+        return Icon(Icons.restart_alt_outlined, size: size, color: color);
       default:
         return Icon(Icons.info, size: size, color: color);
     }
