@@ -6,9 +6,9 @@ final projectRepositoryProvider = Provider<ProjectRepository>((ref) {
   return ProjectRepository();
 });
 
-final projectListProvider = FutureProvider<List<Project>>((ref) async {
+final projectListProvider = StreamProvider<List<Project>>((ref) {
   final repository = ref.read(projectRepositoryProvider);
-  return await repository.getProjects();
+  return repository.getProjects();
 });
 
 enum DashboardTab { all, inProgress, completed, pending, shipped }
@@ -42,7 +42,6 @@ final filteredProjectListProvider = Provider<AsyncValue<List<Project>>>((ref) {
                 project.status == 'Quotation Sent' ||
                 project.status == 'quotationReviewRequired')
             .toList();
-
       case DashboardTab.shipped:
         return projects
             .where((project) => project.status == 'reportShipped')

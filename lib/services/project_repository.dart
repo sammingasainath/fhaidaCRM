@@ -5,18 +5,19 @@ import '../models/project.dart';
 class ProjectRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<List<Project>> getProjects() async {
+  Stream<List<Project>> getProjects() {
     User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) return [];
+    if (user == null) return Stream.value([]);
 
-    QuerySnapshot snapshot = await _firestore
+    return _firestore
         .collection('projects')
         .where('userID', isEqualTo: _firestore.doc('users/${user.uid}'))
-        .get();
-
-    return snapshot.docs
-        .map((doc) =>
-            Project.fromMap(doc.id, doc.data() as Map<String, dynamic>))
-        .toList();
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) =>
+                  Project.fromMap(doc.id, doc.data() as Map<String, dynamic>))
+              .toList();
+        });
   }
 }
