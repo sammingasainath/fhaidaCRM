@@ -1,6 +1,9 @@
+//In Complete
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/show_pdf_modal.dart';
+import '../services/show_pdf_upload_modal.dart';
 
 import '../services/update_project_status_client.dart';
 
@@ -44,7 +47,9 @@ CallToAction getCallToAction(String status, BuildContext context,
         buttons: [
           CallToActionButton(
             text: 'Upload',
-            action: () {},
+            action: () {
+              showUploadPdfModal(context, projectId);
+            },
             color: Colors.white,
             textColor: Colors.red.shade700,
           ),
