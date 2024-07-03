@@ -53,6 +53,7 @@ dependencies:
   url_launcher: ^6.3.0
   firebase_storage: ^12.1.0
   file_picker: ^8.0.5
+  slider_button: ^2.1.0
 
 dev_dependencies:
   flutter_test:

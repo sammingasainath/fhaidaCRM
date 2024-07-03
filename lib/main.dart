@@ -29,7 +29,7 @@ class MyApp extends ConsumerWidget {
     final List<Widget> _screens = [
       DashboardScreen(),
       DummyFeedsScreen(), // Replace with your other screens
-      DummyProjectDetailsForm(),
+      ProjectDetailsForm(),
       DummyAlertsScreen(),
       DummyChatScreen()
     ];

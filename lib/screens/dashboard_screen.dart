@@ -21,12 +21,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return DefaultTabController(
       length: DashboardTab.values.length,
-      initialIndex: lastSelectedTabIndex,
+      initialIndex: lastSelectedTabIndex, 
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(0),
           child: Container(
-            color: Colors.black,
+            color: const Color.fromARGB(255, 255, 255, 255),
           ), // Empty container to remove the default AppBar
         ),
         body: Column(
