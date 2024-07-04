@@ -10,7 +10,7 @@ class CallToActionContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final callToAction = getCallToAction(project.status, context,
-        project.quotationUrl!, project.reportUrl, project.id);
+        project.quotationUrl, project.reportUrl, project.id);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(

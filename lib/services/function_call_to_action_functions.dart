@@ -36,7 +36,7 @@ class CallToActionButton {
 }
 
 CallToAction getCallToAction(String status, BuildContext context,
-    String quotationUrl, String? reportUrl, String projectId) {
+    String? quotationUrl, String? reportUrl, String projectId) {
   switch (status) {
     case 'Action Required':
       return CallToAction(

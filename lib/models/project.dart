@@ -1,3 +1,7 @@
+// models/project.dart
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Update {
   final int id;
   final String title;
@@ -31,18 +35,27 @@ class Project {
   final String status;
   final String? quotationUrl;
   final String? reportUrl;
+  final String? ownerName;
+  final String? ownerPhone;
+  final String? customBoqUrl;
   final List<Update> updates;
+  final DocumentReference userID;
 
-  Project(
-      {required this.id,
-      required this.location,
-      required this.name,
-      required this.paymentDue,
-      required this.paymentReceived,
-      required this.status,
-      required this.updates,
-      this.quotationUrl,
-      this.reportUrl});
+  Project({
+    required this.id,
+    required this.location,
+    required this.name,
+    required this.paymentDue,
+    required this.paymentReceived,
+    required this.status,
+    required this.updates,
+    required this.userID,
+    this.quotationUrl,
+    this.reportUrl,
+    this.ownerName,
+    this.ownerPhone,
+    this.customBoqUrl,
+  });
 
   factory Project.fromMap(String id, Map<String, dynamic> data) {
     var updatesFromMap = (data['updates'] as List<dynamic>)
@@ -59,6 +72,10 @@ class Project {
       updates: updatesFromMap,
       quotationUrl: data['quotationUrl'],
       reportUrl: data['reportUrl'],
+      ownerName: data['ownerName'],
+      ownerPhone: data['ownerPhone'],
+      customBoqUrl: data['customBoqUrl'],
+      userID: data['userID'],
     );
   }
 
@@ -71,6 +88,12 @@ class Project {
       'paymentReceived': paymentReceived,
       'status': status,
       'updates': updates.map((update) => update.toMap()).toList(),
+      'quotationUrl': quotationUrl,
+      'reportUrl': reportUrl,
+      'ownerName': ownerName,
+      'ownerPhone': ownerPhone,
+      'customBoqUrl': customBoqUrl,
+      'userID': userID
     };
   }
 }

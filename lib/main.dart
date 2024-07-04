@@ -1,7 +1,7 @@
 import 'package:anucivil_client/screens/dummy_chat_screen.dart';
 import 'package:anucivil_client/screens/dummy_feed.dart';
 import 'package:anucivil_client/screens/dummy_profile.dart';
-import 'package:anucivil_client/screens/dummy_project_form.dart';
+import 'package:anucivil_client/screens/project_details_form.dart';
 import 'package:anucivil_client/screens/user_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

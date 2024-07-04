@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '/keys/apikeys.dart';
 
-void viewQuotation(BuildContext context, String url) async {
+void viewQuotation(BuildContext context, String? url) async {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -25,7 +25,7 @@ void viewQuotation(BuildContext context, String url) async {
             ),
             Expanded(
               child: SfPdfViewer.network(
-                url,
+                url!,
                 key: pdfViewerKey,
               ),
             ),
