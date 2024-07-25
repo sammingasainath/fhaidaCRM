@@ -36,7 +36,7 @@ class CallToActionButton {
 }
 
 CallToAction getCallToAction(String status, BuildContext context,
-    String? quotationUrl, String? reportUrl, String projectId) {
+    String? quotationUrl, String? reportUrl, String? projectId) {
   switch (status) {
     case 'Action Required':
       return CallToAction(
@@ -48,7 +48,7 @@ CallToAction getCallToAction(String status, BuildContext context,
           CallToActionButton(
             text: 'Upload',
             action: () {
-              showUploadPdfModal(context, projectId);
+              showUploadPdfModal(context, projectId!);
             },
             color: Colors.white,
             textColor: Colors.red.shade700,
@@ -85,7 +85,7 @@ CallToAction getCallToAction(String status, BuildContext context,
           CallToActionButton(
             text: 'Confirm Quotation',
             action: () {
-              updateProjectStatus(projectId, 'Quotation Accepted');
+              updateProjectStatus(projectId!, 'Quotation Accepted');
               Navigator.pushReplacementNamed(context, '/');
             },
             color: const Color.fromARGB(255, 240, 114, 5),
@@ -101,7 +101,7 @@ CallToAction getCallToAction(String status, BuildContext context,
             text: 'Review Quotation',
             action: () => popDialog(
                 context,
-                projectId,
+                projectId!,
                 'Review Quotation',
                 'Call Now to Clarify the Quotation !',
                 'quotationReviewRequired'),
@@ -155,7 +155,7 @@ CallToAction getCallToAction(String status, BuildContext context,
           ),
           CallToActionButton(
             text: 'Review Report',
-            action: () => popDialog(context, projectId, 'Review Repoet',
+            action: () => popDialog(context, projectId!, 'Review Repoet',
                 'Call Now to Clarify the Report !', 'reportReviewRequired'),
             color: Color.fromARGB(255, 255, 255, 255),
             textColor: Colors.teal.shade700,

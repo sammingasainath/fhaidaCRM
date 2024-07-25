@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:anucivil_client/screens/dashboard_screen.dart';
 import '../providers/navigation_provider.dart';
 
 class BottomNavBar extends ConsumerWidget {

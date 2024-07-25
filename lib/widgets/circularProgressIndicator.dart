@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CircularProgressIndicatorWithPercentage extends StatelessWidget {
-  final double progress;
+  final double? progress;
   final Color color;
 
   CircularProgressIndicatorWithPercentage(
@@ -14,10 +14,10 @@ class CircularProgressIndicatorWithPercentage extends StatelessWidget {
       children: [
         CustomPaint(
           size: Size(40, 40), // Adjust size as needed
-          painter: CircularProgressPainter(progress: progress, color: color),
+          painter: CircularProgressPainter(progress: progress!, color: color),
         ),
         Text(
-          '${(progress * 100).toInt()}%',
+          '${(progress! * 100).toInt()}%',
           style: TextStyle(
             fontSize: 14,
             color: color,

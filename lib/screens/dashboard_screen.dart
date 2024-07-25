@@ -21,7 +21,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return DefaultTabController(
       length: DashboardTab.values.length,
-      initialIndex: lastSelectedTabIndex, 
+      initialIndex: lastSelectedTabIndex,
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(0),
@@ -75,7 +75,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildTabContent(DashboardTab selectedTab, WidgetRef ref) {
+    print(selectedTab);
     final projectListAsyncValue = ref.watch(filteredProjectListProvider);
+    print(projectListAsyncValue);
 
     return projectListAsyncValue.when(
       data: (projects) => ListView.builder(
@@ -98,6 +100,7 @@ class TabBarWidget extends ConsumerWidget {
 
     return projectListAsyncValue.when(
       data: (projects) {
+        print(projects);
         int allCount = projects.length;
         int completedCount =
             projects.where((p) => p.status == 'reportRecieved').length;

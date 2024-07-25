@@ -27,11 +27,11 @@ class Update {
 }
 
 class Project {
-  final String id;
+  final String? id;
   final String location;
   final String name;
-  final int? paymentDue;
-  final int? paymentReceived;
+  final double? paymentDue;
+  final double? paymentReceived;
   final String status;
   final String? quotationUrl;
   final String? reportUrl;
@@ -41,8 +41,18 @@ class Project {
   final List<Update> updates;
   final DocumentReference userID;
 
+  // New fields
+  final bool? isOwnerDifferent;
+  final bool customBoQ;
+  final int? boreHoles;
+  final double? boreHoleDepth;
+  final List<String>? selectedServices;
+  final double? area;
+  final bool? priority;
+  final String? remarks;
+
   Project({
-    required this.id,
+    this.id,
     required this.location,
     required this.name,
     required this.paymentDue,
@@ -55,6 +65,14 @@ class Project {
     this.ownerName,
     this.ownerPhone,
     this.customBoqUrl,
+    this.isOwnerDifferent,
+    required this.customBoQ,
+    this.boreHoles,
+    this.boreHoleDepth,
+    this.selectedServices,
+    this.area,
+    required this.priority,
+    this.remarks,
   });
 
   factory Project.fromMap(String id, Map<String, dynamic> data) {
@@ -66,8 +84,8 @@ class Project {
       id: id,
       location: data['location'],
       name: data['name'],
-      paymentDue: data['paymentDue'],
-      paymentReceived: data['paymentReceived'],
+      paymentDue: (data['paymentDue'] as num?)?.toDouble(),
+      paymentReceived: (data['paymentReceived'] as num?)?.toDouble(),
       status: data['status'],
       updates: updatesFromMap,
       quotationUrl: data['quotationUrl'],
@@ -76,6 +94,14 @@ class Project {
       ownerPhone: data['ownerPhone'],
       customBoqUrl: data['customBoqUrl'],
       userID: data['userID'],
+      isOwnerDifferent: data['isOwnerDifferent'] ?? false,
+      customBoQ: data['customBoQ'] ?? false,
+      boreHoles: data['boreHoles'],
+      boreHoleDepth: (data['boreHoleDepth'] as num?)?.toDouble(),
+      selectedServices: List<String>.from(data['selectedServices'] ?? []),
+      area: (data['area'] as num?)?.toDouble(),
+      priority: data['priority'] ?? false,
+      remarks: data['remarks'],
     );
   }
 
@@ -93,7 +119,15 @@ class Project {
       'ownerName': ownerName,
       'ownerPhone': ownerPhone,
       'customBoqUrl': customBoqUrl,
-      'userID': userID
+      'userID': userID,
+      'isOwnerDifferent': isOwnerDifferent,
+      'customBoQ': customBoQ,
+      'boreHoles': boreHoles,
+      'boreHoleDepth': boreHoleDepth,
+      'selectedServices': selectedServices,
+      'area': area,
+      'priority': priority,
+      'remarks': remarks,
     };
   }
 }

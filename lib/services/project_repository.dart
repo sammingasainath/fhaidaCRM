@@ -14,10 +14,12 @@ class ProjectRepository {
         .where('userID', isEqualTo: _firestore.doc('users/${user.uid}'))
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs
-              .map((doc) =>
-                  Project.fromMap(doc.id, doc.data() as Map<String, dynamic>))
-              .toList();
-        });
+      
+      return snapshot.docs
+          .map((doc) =>
+              Project.fromMap(doc.id, doc.data() as Map<String, dynamic>))
+          .toList();
+          
+    });
   }
 }
