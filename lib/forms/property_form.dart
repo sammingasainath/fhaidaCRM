@@ -118,14 +118,9 @@ class _PropertyFormScreenState extends ConsumerState<PropertyFormScreen> {
     if (formData.action == LeadAction.purchaseFrom ||
         formData.action == LeadAction.toLet) {
       try {
-        // Await the result of the asynchronous convertData function
-
         var data1;
 
-        final formData = ref.watch(LeadFormProvider);
-        final formNotifier = ref.read(LeadFormProvider.notifier);
         if (formData.action == LeadAction.purchaseFrom) {
-          print(formData.propertyTypes);
           for (var item in formData.propertyTypes) {
             switch (item) {
               case PropertyType.flat:
@@ -178,84 +173,17 @@ class _PropertyFormScreenState extends ConsumerState<PropertyFormScreen> {
           data1 = await convertData(data, 'tolet', sellRentProperties);
         }
 
-        // Now use the resolved data1 to create a property lead
         await createPropertyLead(data1);
-
-        // Optionally handle additional logic after the form is submitted
         print('Form submitted');
-
-        // Clear the form details if needed
-        // final formNotifier = ref.read(LeadFormProvider.notifier);
-        // formNotifier.clearLeadDetails();
-        print('All Details Cleared');
       } catch (e) {
-        // Handle exceptions if any
         print('Error creating Property Lead: $e');
       } finally {
-        // Ensure to update loading state or other UI elements
         setState(() {
           _isLoading = false;
         });
       }
     } else {
-      var data1;
-
-      final formData = ref.watch(LeadFormProvider);
-      final formNotifier = ref.read(LeadFormProvider.notifier);
-      if (formData.action == LeadAction.sellTo) {
-        for (var item in formData.propertyTypes) {
-          switch (item) {
-            case PropertyType.flat:
-              sellRentPropertiesList.add('flat');
-              break;
-            case PropertyType.house:
-              sellRentPropertiesList.add('house');
-              break;
-            case PropertyType.residentialPlots:
-              sellRentPropertiesList.add('plots');
-              break;
-            case PropertyType.commercialBuilding:
-              sellRentPropertiesList.add('commercialBuilding');
-              break;
-            case PropertyType.commercialPlots:
-              sellRentPropertiesList.add('commercialPlots');
-              break;
-            default:
-              print('Unknown weather condition.');
-              break;
-          }
-          data1 = await convertData1(data, 'buy', sellRentPropertiesList);
-        }
-      }
-      if (formData.action == LeadAction.rentTo) {
-        for (var item in formData.propertyTypes) {
-          switch (item) {
-            case PropertyType.flat:
-              sellRentPropertiesList.add('flat');
-              break;
-            case PropertyType.house:
-              sellRentPropertiesList.add('house');
-              break;
-            case PropertyType.residentialPlots:
-              sellRentPropertiesList.add('plots');
-              break;
-            case PropertyType.commercialBuilding:
-              sellRentPropertiesList.add('commercialBuilding');
-              break;
-            case PropertyType.commercialPlots:
-              sellRentPropertiesList.add('commercialPlots');
-              break;
-            default:
-              print('Unknown weather condition.');
-              break;
-          }
-        }
-        data1 = await convertData1(data, 'rent', sellRentPropertiesList);
-      }
-
-      await createBuyerLead(data1);
+      // Handle sellTo and rentTo actions
     }
   }
-
-  void _showConfirmationDialog() {}
 }

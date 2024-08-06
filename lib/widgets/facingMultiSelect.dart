@@ -5,14 +5,10 @@ import '../forms/property_form.dart';
 import '../forms/form_steps/step3/step3.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-
-
-  
-
-Widget buildMultiSelectFacing(BuildContext context , WidgetRef ref , String title) {
-
+Widget buildMultiSelectFacing(
+    BuildContext context, WidgetRef ref, String title) {
   final formData = ref.watch(LeadFormProvider);
-    final formNotifier = ref.read(LeadFormProvider.notifier);
+  final formNotifier = ref.read(LeadFormProvider.notifier);
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -29,17 +25,17 @@ Widget buildMultiSelectFacing(BuildContext context , WidgetRef ref , String titl
           bool isSelected =
               (formData.leadDetails?['facing'] as List<Facing>? ?? [])
                   .contains(facing);
-          return _buildFacingChip(context, facing, isSelected , ref);
+          return _buildFacingChip(context, facing, isSelected, ref);
         }).toList(),
       ),
     ],
   );
 }
 
-Widget _buildFacingChip(BuildContext context, Facing facing, bool isSelected , WidgetRef ref) {
-
-    final formData = ref.watch(LeadFormProvider);
-    final formNotifier = ref.read(LeadFormProvider.notifier);
+Widget _buildFacingChip(
+    BuildContext context, Facing facing, bool isSelected, WidgetRef ref) {
+  final formData = ref.watch(LeadFormProvider);
+  final formNotifier = ref.read(LeadFormProvider.notifier);
   return FilterChip(
     label: Text(formatText(facing.toString().split('.').last)),
     selected: isSelected,

@@ -1,82 +1,79 @@
 import 'package:anucivil_client/appwrite/services/crud_service.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:file_picker/file_picker.dart';
+
 import '../../forms/models.dart';
 
-import 'package:dart_appwrite/dart_appwrite.dart';
-
-Future<Map<String, dynamic>> convertData(
-    data, leadtype, sellRentProperties) async {
+Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
+    String leadtype, String sellRentProperties) async {
+  // Ensure non-null values for seller details
   var data2 = {
-    // 'sellerComments': data['comments'],
-    'sellerName': data['ownerName'],
-    'sellerPhoneNumber': data['ownerPhoneNumber'],
-    'alsoWantToBuy': data['alsoWantToBuy'],
+    'sellerName': data['ownerName'] ?? '',
+    'sellerPhoneNumber': data['ownerPhoneNumber'] ?? '',
+    'alsoWantToBuy': data['alsoWantToBuy'] ?? false, // Ensure boolean value
   };
 
-  var sellerID = await createSellerDetails(data2);
-  print(sellerID);
-  FurnishingType furnishingType;
+  var sellerID;
   try {
-    furnishingType = FurnishingType.values.firstWhere(
-      (e) => e.toString().split('.').last == data['furnishingType'],
-      orElse: () => FurnishingType.unFurnished, // default value if not found
-    );
+    sellerID = await createSellerDetails(data2);
+    print('Seller Details created: $sellerID');
   } catch (e) {
-    furnishingType =
-        FurnishingType.unFurnished; // default value in case of error
+    print('Error creating Seller Details: $e');
   }
 
-  ConstructionStatus constructionStatus;
-  try {
-    constructionStatus = ConstructionStatus.values.firstWhere(
-      (e) => e.toString().split('.').last == data['furnishingType'],
-      orElse: () =>
-          ConstructionStatus.noConstruction, // default value if not found
-    );
-  } catch (e) {
-    constructionStatus =
-        ConstructionStatus.noConstruction; // default value in case of error
-  }
+  // Convert and handle enum values
+  FurnishingType furnishingType = FurnishingType.values.firstWhere(
+    (e) => e.toString().split('.').last == data['furnishingType'],
+    orElse: () => FurnishingType.unFurnished, // default value if not found
+  );
+
+  ConstructionStatus constructionStatus = ConstructionStatus.values.firstWhere(
+    (e) => e.toString().split('.').last == data['constructionStatus'],
+    orElse: () =>
+        ConstructionStatus.noConstruction, // default value if not found
+  );
 
   // Convert 'facing' (list of Facing enums)
-// Convert 'facing' (list of Facing enums)
-  List<Facing> facings = List<Facing>.from(data['facing']);
+  List<Facing> facings = List<Facing>.from(data['facing'] ?? []);
   List<String> facingValues = facings.map((f) => f.value).toList();
 
-  ListedBy listedBy;
-
-  try {
-    listedBy = ListedBy.values.firstWhere(
-      (e) => e.toString().split('.').last == data['listedBy'],
-      orElse: () => ListedBy.agent, // default value if not found
-    );
-  } catch (e) {
-    listedBy = ListedBy.agent;
-
-    // default value in case of error
-  }
+  ListedBy listedBy = ListedBy.values.firstWhere(
+    (e) => e.toString().split('.').last == data['listedBy'],
+    orElse: () => ListedBy.agent, // default value if not found
+  );
 
   var data3 = {
-    'assoName': data['associateName'],
-    'assoPhone': data['associateNumber'],
-    'associateType':
-        listedBy.toString().split('.').last // Convert to string for JSON
+    'assoName': data['associateName'] ?? '',
+    'assoPhone': data['associateNumber'] ?? '',
+    'associateType': listedBy.toString().split('.').last,
   };
 
-  var associateID = await createAssociateDetails(data3);
+  var associateID;
+  try {
+    associateID = await createAssociateDetails(data3);
+    print('Associate Details created: $associateID');
+  } catch (e) {
+    print('Error creating Associate Details: $e');
+  }
 
   List<String> photoUrls = [];
+  try {
+    photoUrls = await uploadFiles(data['photos'] ?? [], '66a9e5990027b4011eb6');
+    print(photoUrls);
+  } catch (e) {
+    print('Error uploading photos: $e');
+  }
 
-  photoUrls = await uploadFiles(data['photos'], '66a9e5990027b4011eb6');
+  List<PlatformFile> documents = (data['documents'] as List<dynamic>)
+      .map((item) => item as PlatformFile)
+      .toList();
 
   List<String> documentUrls = [];
-
-  documentUrls =
-      await uploadPlatformFiles(data['documents'], '66a9e5c90002d611a9db');
-
-  print(photoUrls);
+  try {
+    documentUrls = await uploadPlatformFiles(documents, '66a9e5c90002d611a9db');
+    print(documentUrls);
+  } catch (e) {
+    print('Error uploading documents: $e');
+  }
 
   var data1 = {
     'ageOfProperty': data['ageOfProperty'],
@@ -120,13 +117,8 @@ Future<Map<String, dynamic>> convertData(
     'photoUrls': photoUrls,
     'documentUrls': documentUrls,
     'propertyTyp': sellRentProperties,
-    'status':'Action Required'
+    'status': 'Action Required'
   };
-
-  //Seller Details
-
-  // Associate Details
-  print('sellerId :${sellerID}');
 
   return data1;
 }
