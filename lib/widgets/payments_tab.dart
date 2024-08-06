@@ -1,10 +1,11 @@
+import 'package:anucivil_client/models/lead.dart';
 import 'package:flutter/material.dart';
 import '../models/project.dart';
 
 class PaymentsTab extends StatelessWidget {
-  final Project project;
+  final Lead lead;
 
-  PaymentsTab({required this.project});
+  PaymentsTab({required this.lead});
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +20,12 @@ class PaymentsTab extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Agreed Fees: ₹${project.paymentDue}',
+            'Agreed Fees: ₹}',
             style: const TextStyle(fontSize: 18),
           ),
           const SizedBox(height: 8),
           Text(
-            'Payment Received: ₹${project.paymentReceived}',
+            'Payment Received: ₹',
             style: const TextStyle(fontSize: 18),
           ),
         ],

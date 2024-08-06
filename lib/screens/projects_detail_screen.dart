@@ -1,3 +1,4 @@
+import 'package:anucivil_client/models/lead.dart';
 import 'package:flutter/material.dart';
 import '../models/project.dart';
 import '../widgets/project_card_comprehensive.dart';
@@ -6,10 +7,10 @@ import '../widgets/tasks_tab.dart';
 import '../widgets/payments_tab.dart';
 import '../widgets/files_tab.dart';
 
-class UpdatesScreen extends StatelessWidget {
-  final Project project;
+class DetailsScreen extends StatelessWidget {
+  final Lead lead;
 
-  UpdatesScreen({required this.project});
+  DetailsScreen({required this.lead});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class UpdatesScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            ProjectCardComp(project: project),
+            ProjectCardComp(lead: lead),
             TabBar(
               indicatorColor: Color(0xff7F56D9),
               tabs: [
@@ -34,10 +35,16 @@ class UpdatesScreen extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  SummaryTab(project: project),
-                  TasksTab(project: project),
-                  PaymentsTab(project: project),
-                  FilesTab(project: project),
+                  SummaryTab(
+                    lead: lead,
+                  ),
+                  TasksTab(
+                    lead: lead,
+                  ),
+                  PaymentsTab(lead: lead),
+                  FilesTab(
+                    lead: lead,
+                  ),
                 ],
               ),
             ),

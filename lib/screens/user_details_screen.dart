@@ -176,6 +176,8 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
     );
   }
 
+  var userDetailsNotifierProvider;
+
   void _saveUserDetails(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       ref.read(userDetailsNotifierProvider.notifier).saveUserDetails(

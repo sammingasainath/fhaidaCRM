@@ -1,15 +1,41 @@
+import 'package:anucivil_client/appwrite/services/crud_service.dart';
+import 'package:anucivil_client/widgets/lead_card.dart';
+import 'package:anucivil_client/widgets/lead_card_compact.dart';
 import 'package:flutter/material.dart';
-import '../models/project.dart';
+import 'package:intl/intl.dart';
+import '../models/lead.dart';
+import '../widgets/event_card.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'call_to_action_container.dart';
 
 class TasksTab extends StatelessWidget {
-  final Project project;
+  final Lead lead;
 
-  TasksTab({required this.project});
+  TasksTab({required this.lead});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Tasks will be displayed here.'),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // CallToActionContainer(
+          //   lead: lead,
+          // ),
+          SizedBox(height: 22),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: lead.events!
+                    .map((event) => EventCard(event: event))
+                    .toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

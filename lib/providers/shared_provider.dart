@@ -1,61 +1,35 @@
-import 'package:anucivil_client/services/user_details_service.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:appwrite/appwrite.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-// FirebaseAuth instance provider
-final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
-  return FirebaseAuth.instance;
+final clientProvider = Provider<Client>((ref) {
+  Client client = Client();
+  client
+      .setEndpoint(
+          'https://cloud.appwrite.io/v1') // Replace with your Appwrite endpoint
+      .setProject(
+          '669f8f9b000b799d55e7'); // Replace with your Appwrite project ID
+  return client;
 });
 
-// Stream of authentication state changes
-final authStateChangesProvider = StreamProvider<User?>((ref) {
-  final firebaseAuth = ref.watch(firebaseAuthProvider);
-  return firebaseAuth.authStateChanges();
+final accountProvider = Provider<Account>((ref) {
+  final client = ref.watch(clientProvider);
+  return Account(client);
 });
 
-final userDetailsServiceProvider = Provider<UserDetailsService>((ref) {
-  return UserDetailsService();
-});
-
-// This provider checks if the user's details are complete
-final userDetailsCompleteProvider =
-    StateNotifierProvider<UserDetailsCompleteNotifier, AsyncValue<bool>>((ref) {
-  final userDetailsService = ref.watch(userDetailsServiceProvider);
-  return UserDetailsCompleteNotifier(userDetailsService);
-});
-
-class UserDetailsCompleteNotifier extends StateNotifier<AsyncValue<bool>> {
-  final UserDetailsService _userDetailsService;
-
-  UserDetailsCompleteNotifier(this._userDetailsService)
-      : super(AsyncLoading()) {
-    checkUserDetails();
-  }
-
-  Future<void> checkUserDetails() async {
+final authStateProvider = StreamProvider<bool>((ref) async* {
+  final account = ref.watch(accountProvider);
+  while (true) {
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-        if (doc.exists && doc.data() != null) {
-          state = AsyncData(true);
-        } else {
-          state = AsyncData(false);
-        }
-      } else {
-        state = AsyncData(false);
-      }
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
+      final user = await account.get();
+      yield user != null;
+    } catch (_) {
+      yield false;
     }
+    await Future.delayed(Duration(seconds: 5));
   }
-}
+});
+
+// If you need a UserDetailsService, you can create a provider for it here
+// final userDetailsServiceProvider = Provider<UserDetailsService>((ref) {
+//   return UserDetailsService(ref.watch(clientProvider));
+// });

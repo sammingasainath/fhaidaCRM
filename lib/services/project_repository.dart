@@ -1,25 +1,70 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../models/project.dart';
+// project_repository.dart
+
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
+import 'dart:async';
+import '../models/lead.dart';
 
 class ProjectRepository {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final Client client;
+  final Databases databases;
+  final Account account;
 
-  Stream<List<Project>> getProjects() {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) return Stream.value([]);
+  ProjectRepository({required this.client})
+      : databases = Databases(client),
+        account = Account(client);
 
-    return _firestore
-        .collection('projects')
-        .where('userID', isEqualTo: _firestore.doc('users/${user.uid}'))
-        .snapshots()
-        .map((snapshot) {
-      
-      return snapshot.docs
-          .map((doc) =>
-              Project.fromMap(doc.id, doc.data() as Map<String, dynamic>))
+  Future<List<Lead>> getLeads() async {
+    try {
+      final user = await account.get();
+
+      final propertyLeads = await _getPropertyLeads(user.$id);
+      final buyerLeads = await _getBuyerLeads(user.$id);
+
+      print([...propertyLeads, ...buyerLeads]);
+
+      return [...propertyLeads, ...buyerLeads];
+    } catch (e) {
+      print('Error fetching leads: $e');
+      return [];
+    }
+  }
+
+  Future<List<Lead>> _getPropertyLeads(String userId) async {
+    try {
+      final response = await databases.listDocuments(
+        databaseId: '66a217bc0001534c6851',
+        collectionId: 'property_lead',
+        // queries: [
+        //   Query.equal('associateDetails', userId),
+        // ],
+      );
+
+      return response.documents
+          .map((doc) => Lead.fromMap(doc.data, doc.$id))
           .toList();
-          
-    });
+    } catch (e) {
+      print('Error fetching property leads: $e');
+      return [];
+    }
+  }
+
+  Future<List<Lead>> _getBuyerLeads(String userId) async {
+    try {
+      final response = await databases.listDocuments(
+        databaseId: '66a217bc0001534c6851',
+        collectionId: 'buyer_lead',
+        // queries: [
+        //   Query.equal('associateDetails', userId),
+        // ],
+      );
+
+      return response.documents
+          .map((doc) => Lead.fromMap(doc.data, doc.$id))
+          .toList();
+    } catch (e) {
+      print('Error fetching buyer leads: $e');
+      return [];
+    }
   }
 }

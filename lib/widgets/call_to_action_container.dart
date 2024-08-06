@@ -1,16 +1,17 @@
+import 'package:anucivil_client/models/lead.dart';
 import 'package:flutter/material.dart';
 import '../models/project.dart';
 import '../services/function_call_to_action_functions.dart';
 
 class CallToActionContainer extends StatelessWidget {
-  final Project project;
+  final Lead lead;
 
-  CallToActionContainer({required this.project});
+  CallToActionContainer({required this.lead});
 
   @override
   Widget build(BuildContext context) {
-    final callToAction = getCallToAction(project.status, context,
-        project.quotationUrl, project.reportUrl, project.id);
+    final callToAction = getCallToAction(lead.status!, context,
+        lead.areaInSft, lead.areaInSft, lead.id);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(

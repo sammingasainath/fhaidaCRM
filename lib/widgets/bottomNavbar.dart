@@ -7,7 +7,7 @@ class BottomNavBar extends ConsumerWidget {
 
   final List<String> labels = [
     'Projects',
-    'Feed',
+    'Calendar',
     '',
     'Alerts',
     'Chat',
@@ -95,7 +95,7 @@ class BottomNavBar extends ConsumerWidget {
       case 0:
         return Icons.home;
       case 1:
-        return Icons.feed;
+        return Icons.event;
       case 2:
         return Icons.add_circle;
       case 3:

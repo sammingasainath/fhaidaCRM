@@ -1,3 +1,4 @@
+import 'package:anucivil_client/models/lead.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/project.dart';
@@ -6,9 +7,9 @@ import '../widgets/circularProgressIndicator.dart';
 import '../screens/projects_detail_screen.dart';
 
 class ProjectCardComp extends StatelessWidget {
-  final Project project;
+  final Lead lead;
 
-  ProjectCardComp({required this.project});
+  ProjectCardComp({required this.lead});
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +26,14 @@ class ProjectCardComp extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      _buildStatusIcon(project.status),
+                      _buildStatusIcon(lead.status!),
                       const SizedBox(width: 8.0),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              project.name,
+                              '${lead.ageOfProperty.toString()}',
                               style: GoogleFonts.roboto(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -42,7 +43,7 @@ class ProjectCardComp extends StatelessWidget {
                               maxLines: 1,
                             ),
                             Text(
-                              '${project.location}, AP',
+                              '${lead.customerVisitLocation}',
                               style: GoogleFonts.roboto(
                                 fontSize: 14,
                                 color: Colors.black54,
