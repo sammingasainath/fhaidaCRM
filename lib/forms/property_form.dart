@@ -4,6 +4,8 @@ import 'package:anucivil_client/appwrite/services/crud_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/navigation_provider.dart';
+
 import 'models.dart';
 import 'form_steps/step1.dart';
 import './form_steps/step2.dart';
@@ -175,6 +177,7 @@ class _PropertyFormScreenState extends ConsumerState<PropertyFormScreen> {
 
         await createPropertyLead(data1);
         print('Form submitted');
+        ref.read(selectedIndexProvider1.notifier).state = 0;
       } catch (e) {
         print('Error creating Property Lead: $e');
       } finally {

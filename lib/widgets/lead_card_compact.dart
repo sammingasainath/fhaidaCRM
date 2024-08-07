@@ -75,26 +75,6 @@ class LeadCardComponent extends StatelessWidget {
                                             ),
                                           ),
                                   ),
-                                  // (lead.leadType == LeadType.sell ||
-                                  //         lead.leadType == LeadType.tolet)
-                                  //     ? Text(
-                                  //         '${lead.roughAddress!.isEmpty ? '' : lead.roughAddress} ',
-                                  //         style: GoogleFonts.roboto(
-                                  //           fontSize: 14,
-                                  //           color: Colors.black54,
-                                  //         ),
-                                  //         overflow: TextOverflow.ellipsis,
-                                  //         maxLines: 1,
-                                  //       )
-                                  //     : Text(
-                                  //         '${lead.buyerComments!.isEmpty ? '' : lead.buyerComments} ',
-                                  //         style: GoogleFonts.roboto(
-                                  //           fontSize: 14,
-                                  //           color: Colors.black54,
-                                  //         ),
-                                  //         overflow: TextOverflow.ellipsis,
-                                  //         maxLines: 1,
-                                  //       ),
                                   IconButton(
                                       onPressed: () async {
                                         var number =
@@ -152,40 +132,11 @@ class LeadCardComponent extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      (lead.leadType == LeadType.sell ||
-                                              lead.leadType == LeadType.tolet)
-                                          ? Text(
-                                              'Deadline ',
-                                              style: GoogleFonts.roboto(
-                                                fontSize: 14,
-                                                color: Colors.black,
-                                              ),
-                                            )
-                                          : const SizedBox(height: 0.0),
-                                      if (lead.leadType == LeadType.sell ||
-                                          lead.leadType == LeadType.tolet)
-                                        Text(
-                                          '${lead.deadlineToSell != null ? lead.deadlineToSell : ''}',
-                                          style: GoogleFonts.roboto(
-                                            fontSize: 14,
-                                            color: ProjectStatusService
-                                                .getColorBasedOnStatus(
-                                                    lead.status!,
-                                                    isAmount: false),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
                                 ],
                               ),
                             ],
                           ),
                         ),
-                        // _buildStatusBar(lead.status!),
                       ],
                     ),
                     if (isSelected)
@@ -203,9 +154,133 @@ class LeadCardComponent extends StatelessWidget {
               ),
             ),
           )
-        : SizedBox(
-            height: 0,
-          );
+        : Wrap(children: [
+            GestureDetector(
+              onTap: onTap,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: isSelected ? Colors.blue : Colors.grey.shade300,
+                      width: isSelected ? 2 : 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Stack(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    // _buildStatusIcon(lead.status!),
+                                    const SizedBox(width: 8.0),
+                                    Expanded(
+                                      child: (lead.leadType == LeadType.sell ||
+                                              lead.leadType == LeadType.tolet)
+                                          ? Text(
+                                              '${lead.numberOfBedrooms != null ? lead.totalBedrooms : ''} ${lead.totalBedrooms!.isNotEmpty ? lead.totalBedrooms : ''} BHK ${lead.propertyTyp}',
+                                              style: GoogleFonts.roboto(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ))
+                                          : Text(
+                                              '${lead.buyerName != null ? lead.buyerName : ''} ${lead.buyerOccupation!.isNotEmpty ? lead.buyerOccupation : ''}  ${lead.preferredProperties}',
+                                              style: GoogleFonts.roboto(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                    ),
+                                    IconButton(
+                                        onPressed: () async {
+                                          var number =
+                                              (lead.buyerPhoneNumber != null &&
+                                                      lead.buyerPhoneNumber!
+                                                          .isNotEmpty)
+                                                  ? lead.buyerPhoneNumber
+                                                  : ''; //set the number here
+                                          await FlutterPhoneDirectCaller
+                                              .callNumber(number!);
+                                        },
+                                        icon: Icon(
+                                          Icons.call,
+                                          size: 22,
+                                          color: Colors.blueAccent,
+                                        )),
+                                  ],
+                                ),
+                                SizedBox(height: 8.0),
+                                (lead.leadType == LeadType.sell ||
+                                        lead.leadType == LeadType.tolet)
+                                    ? Text(
+                                        'Area: ${lead.areaInSft} sft ',
+                                        style: GoogleFonts.roboto(
+                                          fontSize: 14,
+                                          color: Colors.black54,
+                                        ),
+                                      )
+                                    : const SizedBox(height: 0.0),
+                                const SizedBox(height: 8.0),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${(lead.leadType == LeadType.sell || lead.leadType == LeadType.tolet) ? 'Price' : 'Budget'}',
+                                          style: GoogleFonts.roboto(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${(lead.leadType == LeadType.sell || lead.leadType == LeadType.tolet) ? (lead.sellingPrice == null) ? lead.sellingPrice : lead.propertyRent : lead.buyerBudget}',
+                                          style: GoogleFonts.roboto(
+                                            fontSize: 14,
+                                            color: ProjectStatusService
+                                                .getColorBasedOnStatus(
+                                                    lead.status!,
+                                                    isAmount: true),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (isSelected)
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Icon(
+                            Icons.check_circle,
+                            color: Colors.blue,
+                            size: 24,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ]);
   }
 
   Widget _buildStatusIcon(String status) {

@@ -144,7 +144,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               await eventService.createEventAndUpdateLeads(
                   selectedDateTime, buyerLeads, propertyLeads);
 
-              Navigator.of(context).pop(); // Close the dialog
+              Navigator.of(context).pop();
+              // Navigator.pushNamed(context, '/dashboard'); // Close the dialog
 
               // Show success SnackBar
               ScaffoldMessenger.of(context).showSnackBar(

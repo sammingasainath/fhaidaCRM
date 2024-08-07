@@ -76,7 +76,7 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
   }
 
   var data1 = {
-    'ageOfProperty': data['ageOfProperty'],
+    'ageOfProperty': double.tryParse(data['ageOfProperty']),
     'furnishingType': furnishingType.value,
     'constructionStatus': constructionStatus.value,
     'facing': facingValues,

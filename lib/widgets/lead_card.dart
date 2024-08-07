@@ -71,26 +71,6 @@ class LeadCard extends StatelessWidget {
                                       ),
                                     ),
                             ),
-                            (lead.leadType == LeadType.sell ||
-                                    lead.leadType == LeadType.tolet)
-                                ? Text(
-                                    '${lead.roughAddress!.isEmpty ? '' : lead.roughAddress} ',
-                                    style: GoogleFonts.roboto(
-                                      fontSize: 14,
-                                      color: Colors.black54,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  )
-                                : Text(
-                                    '${lead.buyerComments!.isEmpty ? '' : lead.buyerComments} ',
-                                    style: GoogleFonts.roboto(
-                                      fontSize: 14,
-                                      color: Colors.black54,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
                             IconButton(
                                 onPressed: () {
                                   Navigator.push(
@@ -120,6 +100,26 @@ class LeadCard extends StatelessWidget {
                               )
                             : const SizedBox(height: 0.0),
                         const SizedBox(height: 8.0),
+                        (lead.leadType == LeadType.sell ||
+                                lead.leadType == LeadType.tolet)
+                            ? Text(
+                                '${lead.roughAddress!.isEmpty ? '' : lead.roughAddress} ',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              )
+                            : Text(
+                                '${lead.buyerComments!.isEmpty ? '' : lead.buyerComments} ',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
