@@ -117,8 +117,7 @@ class FlatForm extends ConsumerWidget {
       child: TextFormField(
         decoration: InputDecoration(labelText: label),
         keyboardType: keyboardType,
-        onChanged: (value) => formNotifier
-            .updateLeadDetails({key: double.tryParse('${value}.00')}),
+        onChanged: (value) => formNotifier.updateLeadDetails({key: value}),
       ),
     );
   }

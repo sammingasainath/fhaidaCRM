@@ -1,3 +1,4 @@
+import 'package:anucivil_client/providers/lead_card_compact_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/project_provider.dart';
@@ -24,6 +25,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    _searchController.addListener(() {
+      ref.read(searchQueryProvider.notifier).state = _searchController.text;
+    });
   }
 
   @override
@@ -173,9 +177,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 class TabBarWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final leadListAsyncValue = ref.watch(leadListProvider);
+    final leadListAsyncValue = ref.watch(filteredLeadListProvider);
+    final leadListAsyncValue1 = ref.watch(leadListProvider);
 
-    return leadListAsyncValue.when(
+    return leadListAsyncValue1.when(
       data: (leads) {
         int allCount = leads.length;
         int buyCount = leads.where((l) => l.leadType == LeadType.buy).length;

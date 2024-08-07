@@ -33,7 +33,11 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
   );
 
   // Convert 'facing' (list of Facing enums)
-  List<Facing> facings = List<Facing>.from(data['facing'] ?? []);
+  List<Facing> facings = (data['facing'] as List<dynamic>)
+      .map((e) => Facing.values.firstWhere(
+          (f) => f.toString().split('.').last == e.toString(),
+          orElse: () => Facing.north)) // default to north if not found
+      .toList();
   List<String> facingValues = facings.map((f) => f.value).toList();
 
   ListedBy listedBy = ListedBy.values.firstWhere(
@@ -76,7 +80,7 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
   }
 
   var data1 = {
-    'ageOfProperty': double.tryParse(data['ageOfProperty']),
+    'ageOfProperty': double.tryParse(data['ageOfProperty'].toString()),
     'furnishingType': furnishingType.value,
     'constructionStatus': constructionStatus.value,
     'facing': facingValues,
@@ -89,28 +93,29 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
     'masterBedrooms': data['masterBedrooms'].toString(),
     'bathrooms': data['bathrooms'].toString(),
     'balconies': data['balconies'].toString(),
-    'externalMaintenanceRating': data['externalMaintenanceRating'],
-    'internalMaintenanceRating': data['internalMaintenanceRating'],
+    'externalMaintenanceRating': data['externalMaintenanceRating'].toString(),
+    'internalMaintenanceRating': data['internalMaintenanceRating'].toString(),
     'roughAddress': data['roughAddress'],
     'exactAddress': data['exactAddress'],
     'videoLink': data['videoLink'],
-    'costPrice': data['costPrice'],
-    'sellingPrice': data['sellingPrice'],
-    'commissionPercentage': data['commissionPercentage'],
-    'deadlineToSell': data['deadlineToSell'],
+    'costPrice': double.tryParse(data['costPrice'].toString()),
+    'sellingPrice': double.tryParse(data['sellingPrice'].toString()),
+    'commissionPercentage':
+        double.tryParse(data['commissionPercentage'].toString()),
+    'deadlineToSell': data['deadlineToSell'].toString(),
     'ownerDetails': sellerID,
-    'builtAreaInSft': data['builtAreaInSft'],
-    'widthOfPlot': data['widthOfPlot'],
-    'lengthOfPlot': data['lengthOfPlot'],
+    'builtAreaInSft': data['builtAreaInSft'].toString(),
+    'widthOfPlot': data['widthOfPlot'].toString(),
+    'lengthOfPlot': data['lengthOfPlot'].toString(),
     'preferredTenant': data['preferredTenant'],
-    'preferredAdvance': data['preferredAdvance'],
-    'propertyRent': data['propertyRent'],
+    'preferredAdvance': double.tryParse(data['preferredAdvance'].toString()),
+    'propertyRent': double.tryParse(data['propertyRent'].toString()),
     'customerVisitLocation': data['customerVisitLocation'],
-    'customerVisitLat': data['customerVisitLat'],
-    'customerVisitLng': data['customerVisitLng'],
+    'customerVisitLat': double.tryParse(data['customerVisitLat'].toString()),
+    'customerVisitLng': double.tryParse(data['customerVisitLng'].toString()),
     'exactVisitLocation': data['exactVisitLocation'],
-    'exactVisitLat': data['exactVisitLat'],
-    'exactVisitLng': data['exactVisitLng'],
+    'exactVisitLat': double.tryParse(data['exactVisitLat'].toString()),
+    'exactVisitLng': double.tryParse(data['exactVisitLng'].toString()),
     'description': data['description'],
     'associateDetails': associateID,
     'leadType': leadtype,
