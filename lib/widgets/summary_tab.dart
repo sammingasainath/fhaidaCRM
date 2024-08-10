@@ -1,296 +1,407 @@
 import 'package:flutter/material.dart';
-import '../models/lead.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'call_to_action_container.dart';
+import '../models/lead.dart';
 
-class SummaryTab extends StatelessWidget {
+class SummaryTab extends StatefulWidget {
   final Lead lead;
 
   SummaryTab({required this.lead});
 
   @override
+  _SummaryTabState createState() => _SummaryTabState();
+}
+
+class _SummaryTabState extends State<SummaryTab> {
+  Set<String> selectedFields = {};
+  bool selectAll = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // CallToActionContainer(
-          //   lead: lead,
-          // ),
-          SizedBox(height: 22),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: _buildLeadDetails(context),
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSelectAllCheckbox(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _buildLeadDetails(context),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+      floatingActionButton: _buildShareFAB(),
     );
+  }
+
+  Widget _buildSelectAllCheckbox() {
+    return CheckboxListTile(
+      title: Text('Select All'),
+      value: selectAll,
+      onChanged: (bool? value) {
+        setState(() {
+          selectAll = value ?? false;
+          if (selectAll) {
+            selectedFields = Set.from(_getSelectableFields());
+          } else {
+            selectedFields.clear();
+          }
+        });
+      },
+    );
+  }
+
+  Widget _buildShareFAB() {
+    return selectedFields.isNotEmpty
+        ? FloatingActionButton.extended(
+            onPressed: _showShareOptions,
+            label: Text('Share ${selectedFields.length} fields'),
+            icon: Icon(Icons.share),
+          )
+        : FloatingActionButton(
+            onPressed: () {},
+            child: Icon(Icons.share),
+          );
+  }
+
+  void _showShareOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.chat),
+              title: Text('WhatsApp'),
+              onTap: () => _shareVia('whatsapp'),
+            ),
+            ListTile(
+              leading: Icon(Icons.sms),
+              title: Text('SMS'),
+              onTap: () => _shareVia('sms'),
+            ),
+            ListTile(
+              leading: Icon(Icons.email),
+              title: Text('Email'),
+              onTap: () => _shareVia('email'),
+            ),
+            ListTile(
+              leading: Icon(Icons.copy),
+              title: Text('Copy to Clipboard'),
+              onTap: () => _shareVia('clipboard'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _shareVia(String method) {
+    String shareText = _getFormattedText();
+    switch (method) {
+      case 'whatsapp':
+        launch('whatsapp://send?text=${Uri.encodeComponent(shareText)}');
+        break;
+      case 'sms':
+        launch('sms:?body=${Uri.encodeComponent(shareText)}');
+        break;
+      case 'email':
+        launch('mailto:?body=${Uri.encodeComponent(shareText)}');
+        break;
+      case 'clipboard':
+        Clipboard.setData(ClipboardData(text: shareText));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Copied to clipboard')),
+        );
+        break;
+    }
+    Navigator.pop(context);
+  }
+
+  String _getFormattedText() {
+    StringBuffer buffer = StringBuffer();
+    for (String field in selectedFields) {
+      buffer.writeln('$field: ${_getFieldValue(field)}');
+    }
+    return buffer.toString();
+  }
+
+  String _getFieldValue(String field) {
+    switch (field) {
+      case 'Furnishing Type':
+        return widget.lead.furnishingType ?? '';
+      case 'Construction Status':
+        return widget.lead.constructionStatus ?? '';
+      case 'Built Area (SFT)':
+        return widget.lead.builtAreaInSft?.toString() ?? '';
+      case 'Total Floors':
+        return widget.lead.totalFloors?.toString() ?? '';
+      case 'Plot Width':
+        return widget.lead.widthOfPlot?.toString() ?? '';
+      case 'Plot Length':
+        return widget.lead.lengthOfPlot?.toString() ?? '';
+      case 'Total Bedrooms':
+        return widget.lead.totalBedrooms?.toString() ?? '';
+      case 'Master Bedrooms':
+        return widget.lead.masterBedrooms?.toString() ?? '';
+      case 'Bathrooms':
+        return widget.lead.bathrooms?.toString() ?? '';
+      case 'Balconies':
+        return widget.lead.balconies?.toString() ?? '';
+      case 'External Maintenance Rating':
+        return widget.lead.externalMaintenanceRating?.toString() ?? '';
+      case 'Internal Maintenance Rating':
+        return widget.lead.internalMaintenanceRating?.toString() ?? '';
+      case 'Rough Address':
+        return widget.lead.roughAddress ?? '';
+      case 'Customer Visit Location':
+        return widget.lead.customerVisitLocation ?? '';
+      case 'Visit Location (Lat/Lng)':
+        return 'https://www.google.com/maps/search/${widget.lead.customerVisitLat ?? ''},${widget.lead.customerVisitLng ?? ''}';
+      case 'Exact Address':
+        return widget.lead.exactAddress ?? '';
+      case 'Exact Visit Location (Lat/Lng)':
+        return '${widget.lead.exactVisitLat ?? ''}, ${widget.lead.exactVisitLng ?? ''}';
+      case 'Video Link':
+        return widget.lead.videoLink ?? '';
+      case 'Description':
+        return widget.lead.description ?? '';
+      case 'Cost Price':
+        return widget.lead.costPrice?.toString() ?? '';
+      case 'Selling Price':
+        return widget.lead.sellingPrice?.toString() ?? '';
+      case 'Commission Percentage':
+        return widget.lead.commissionPercentage?.toString() ?? '';
+      case 'Deadline to Sell':
+        return widget.lead.deadlineToSell ?? '';
+      case 'Total Floors in Apartment':
+        return widget.lead.totalFloorsInApartment?.toString() ?? '';
+      case 'Total Blocks in Apartment':
+        return widget.lead.totalBlocksInApartment?.toString() ?? '';
+      case 'Floor of Flat':
+        return widget.lead.floorOfFlat ?? '';
+      case 'Preferred Tenant':
+        return widget.lead.preferredTenant ?? '';
+      case 'Preferred Advance':
+        return widget.lead.preferredAdvance?.toString() ?? '';
+      case 'Property Rent':
+        return widget.lead.propertyRent?.toString() ?? '';
+      case 'Age of Property':
+        return widget.lead.ageOfProperty?.toString() ?? '';
+      case 'Facing':
+        return widget.lead.facing?.join(', ') ?? '';
+      case 'Area (SFT)':
+        return widget.lead.areaInSft ?? '';
+      case 'Phone Number':
+        return widget.lead.buyerPhoneNumber ?? '';
+      case 'Name':
+        return widget.lead.buyerName ?? '';
+      case 'Number of Bedrooms':
+        return widget.lead.numberOfBedrooms?.toString() ?? '';
+      case 'Also Want to Sell':
+        return widget.lead.alsoWantToSell == true ? 'Yes' : 'No';
+      case 'Location':
+        return widget.lead.buyerLocation ?? '';
+      case 'Location (Lat/Lng)':
+        return '${widget.lead.buyerLat ?? ''}, ${widget.lead.buyerLng ?? ''}';
+      case 'Budget':
+        return widget.lead.buyerBudget ?? '';
+      case 'Email':
+        return widget.lead.buyerEmail ?? '';
+      case 'Occupation':
+        return widget.lead.buyerOccupation ?? '';
+      case 'Comments':
+        return widget.lead.buyerComments ?? '';
+      case 'Property Type':
+        return widget.lead.propertyTyp ?? '';
+      case 'Preferred Properties':
+        return widget.lead.preferredProperties?.join(', ') ?? '';
+      default:
+        return '';
+    }
+  }
+
+  List<String> _getAllFields() {
+    List<String> fields = [
+      'Furnishing Type',
+      'Construction Status',
+      'Built Area (SFT)',
+      'Total Floors',
+      'Plot Width',
+      'Plot Length',
+      'Total Bedrooms',
+      'Master Bedrooms',
+      'Bathrooms',
+      'Balconies',
+      'External Maintenance Rating',
+      'Internal Maintenance Rating',
+      'Rough Address',
+      'Customer Visit Location',
+      'Visit Location (Lat/Lng)',
+      'Exact Address',
+      'Exact Visit Location (Lat/Lng)',
+      'Video Link',
+      'Description',
+      'Cost Price',
+      'Selling Price',
+      'Commission Percentage',
+      'Deadline to Sell',
+      'Total Floors in Apartment',
+      'Total Blocks in Apartment',
+      'Floor of Flat',
+      'Preferred Tenant',
+      'Preferred Advance',
+      'Property Rent',
+      'Age of Property',
+      'Facing',
+      'Area (SFT)',
+      'Phone Number',
+      'Name',
+      'Number of Bedrooms',
+      'Also Want to Sell',
+      'Location',
+      'Location (Lat/Lng)',
+      'Budget',
+      'Email',
+      'Occupation',
+      'Comments',
+      'Property Type',
+      'Preferred Properties',
+    ];
+    return fields.where((field) => _getFieldValue(field).isNotEmpty).toList();
   }
 
   List<Widget> _buildLeadDetails(BuildContext context) {
     List<Widget> details = [];
-    // print('Check karle${lead.preferredLocations}');
 
-    // Display common fields
-
-    // Conditional fields based on leadType
-    if (lead.leadType == LeadType.sell || lead.leadType == LeadType.tolet) {
+    if (widget.lead.leadType == LeadType.sell ||
+        widget.lead.leadType == LeadType.tolet) {
       details.add(_buildDetailSection(
-          'Property Details:',
-          [
-            _buildDetailRow(
-                icon: Icons.home,
-                title: 'Furnishing Type:',
-                value: lead.furnishingType),
-            _buildDetailRow(
-                icon: Icons.build,
-                title: 'Construction Status:',
-                value: lead.constructionStatus),
-            _buildDetailRow(
-                icon: Icons.straighten,
-                title: 'Built Area (SFT):',
-                value: lead.builtAreaInSft?.toString()),
-            _buildDetailRow(
-                icon: Icons.layers,
-                title: 'Total Floors:',
-                value: lead.totalFloors?.toString()),
-            _buildDetailRow(
-                icon: Icons.square_foot,
-                title: 'Plot Width:',
-                value: lead.widthOfPlot?.toString()),
-            _buildDetailRow(
-                icon: Icons.square_foot,
-                title: 'Plot Length:',
-                value: lead.lengthOfPlot?.toString()),
-            _buildDetailRow(
-                icon: Icons.bed,
-                title: 'Total Bedrooms:',
-                value: lead.totalBedrooms?.toString()),
-            _buildDetailRow(
-                icon: Icons.bed,
-                title: 'Master Bedrooms:',
-                value: lead.masterBedrooms?.toString()),
-            _buildDetailRow(
-                icon: Icons.bathtub,
-                title: 'Bathrooms:',
-                value: lead.bathrooms?.toString()),
-            _buildDetailRow(
-                icon: Icons.balcony,
-                title: 'Balconies:',
-                value: lead.balconies?.toString()),
-            _buildDetailRow(
-                icon: Icons.star_border,
-                title: 'External Maintenance Rating:',
-                value: lead.externalMaintenanceRating?.toString()),
-            _buildDetailRow(
-                icon: Icons.star_border,
-                title: 'Internal Maintenance Rating:',
-                value: lead.internalMaintenanceRating?.toString()),
-            _buildDetailRow(
-                icon: Icons.map,
-                title: 'Rough Address:',
-                value: lead.roughAddress),
-            _buildDetailRow(
-                icon: Icons.place,
-                title: 'Customer Visit Location:',
-                value: lead.customerVisitLocation),
-            _buildDetailRow(
-                icon: Icons.location_on,
-                title: 'Visit Location (Lat/Lng):',
-                value:
-                    '${lead.customerVisitLat ?? ''}, ${lead.customerVisitLng ?? ''}'),
-            _buildDetailRow(
-                icon: Icons.place,
-                title: 'Exact Address:',
-                value: lead.exactAddress),
-            _buildDetailRow(
-                icon: Icons.location_on,
-                title: 'Exact Visit Location (Lat/Lng):',
-                value:
-                    '${lead.exactVisitLat ?? ''}, ${lead.exactVisitLng ?? ''}'),
-            _buildDetailRow(
-                icon: Icons.video_call,
-                title: 'Video Link:',
-                value: lead.videoLink),
-            _buildDetailRow(
-                icon: Icons.description,
-                title: 'Description:',
-                value: lead.description),
-            _buildDetailRow(
-                icon: Icons.attach_money,
-                title: 'Cost Price:',
-                value: lead.costPrice?.toString()),
-            _buildDetailRow(
-                icon: Icons.attach_money,
-                title: 'Selling Price:',
-                value: lead.sellingPrice?.toString()),
-            _buildDetailRow(
-                icon: Icons.percent,
-                title: 'Commission Percentage:',
-                value: lead.commissionPercentage?.toString()),
-            _buildDetailRow(
-                icon: Icons.calendar_today,
-                title: 'Deadline to Sell:',
-                value: lead.deadlineToSell),
-            _buildDetailRow(
-                icon: Icons.layers,
-                title: 'Total Floors in Apartment:',
-                value: lead.totalFloorsInApartment?.toString()),
-            _buildDetailRow(
-                icon: Icons.build,
-                title: 'Total Blocks in Apartment:',
-                value: lead.totalBlocksInApartment?.toString()),
-            _buildDetailRow(
-                icon: Icons.api_sharp,
-                title: 'Floor of Flat:',
-                value: lead.floorOfFlat),
-            _buildDetailRow(
-                icon: Icons.person,
-                title: 'Preferred Tenant:',
-                value: lead.preferredTenant),
-            _buildDetailRow(
-                icon: Icons.monetization_on,
-                title: 'Preferred Advance:',
-                value: lead.preferredAdvance?.toString()),
-            _buildDetailRow(
-                icon: Icons.monetization_on,
-                title: 'Property Rent:',
-                value: lead.propertyRent?.toString()),
-            _buildDetailRow(
-                icon: Icons.access_time,
-                title: 'Age of Property:',
-                value: lead.ageOfProperty?.toString()),
-            _buildDetailRow(
-                icon: Icons.exposure,
-                title: 'Facing:',
-                value: lead.facing?.join(', ')),
-            _buildDetailRow(
-                icon: Icons.square_foot,
-                title: 'Area (SFT):',
-                value: lead.areaInSft),
-            //   _buildDetailRow(
-            //       icon: Icons.photo,
-            //       title: 'Photos:',
-            //       value: lead.photoUrls?.join(', ')),
-            //   _buildDetailRow(
-            //       icon: Icons.attach_file,
-            //       title: 'Documents:',
-            //       value: lead.documentUrls?.join(', ')),
-          ],
-          context));
-    } else if (lead.leadType == LeadType.buy ||
-        lead.leadType == LeadType.rent) {
-      details.add(_buildDetailSection(
-          'Buyer Details:',
-          [
-            _buildDetailRow(
-                icon: Icons.phone,
-                title: 'Phone Number:',
-                value: lead.buyerPhoneNumber),
-            _buildDetailRow(
-                icon: Icons.person, title: 'Name:', value: lead.buyerName),
-            _buildDetailRow(
-                icon: Icons.bed,
-                title: 'Number of Bedrooms:',
-                value: lead.numberOfBedrooms?.toString()),
-            _buildDetailRow(
-                icon: Icons.sync,
-                title: 'Also Want to Sell:',
-                value: lead.alsoWantToSell == true ? 'Yes' : 'No'),
-            _buildDetailRow(
-                icon: Icons.location_on,
-                title: 'Location:',
-                value: lead.buyerLocation),
-            _buildDetailRow(
-                icon: Icons.location_on,
-                title: 'Location (Lat/Lng):',
-                value: '${lead.buyerLat ?? ''}, ${lead.buyerLng ?? ''}'),
-            _buildDetailRow(
-                icon: Icons.attach_money,
-                title: 'Budget:',
-                value: lead.buyerBudget),
-            _buildDetailRow(
-                icon: Icons.email, title: 'Email:', value: lead.buyerEmail),
-            _buildDetailRow(
-                icon: Icons.work,
-                title: 'Occupation:',
-                value: lead.buyerOccupation),
-            _buildDetailRow(
-                icon: Icons.comment,
-                title: 'Comments:',
-                value: lead.buyerComments),
-            // _buildDetailRow(
-            //     icon: Icons.location_on,
-            //     title: 'Preferred Locations:',
-            //     value: lead.preferredLocations?.join(', ')),
-            _buildDetailRow(
-                icon: Icons.home,
-                title: 'Property Type:',
-                value: lead.propertyTyp),
-            _buildDetailRow(
-                icon: Icons.favorite,
-                title: 'Preferred Properties:',
-                value: lead.preferredProperties?.join(', ')),
-          ],
-          context));
+          'Property Details:', _buildPropertyDetails(), context));
+    } else if (widget.lead.leadType == LeadType.buy ||
+        widget.lead.leadType == LeadType.rent) {
+      details.add(
+          _buildDetailSection('Buyer Details:', _buildBuyerDetails(), context));
     }
 
-    if (lead.preferredLocations != null &&
-        lead.preferredLocations!.isNotEmpty) {
+    if (widget.lead.preferredLocations != null &&
+        widget.lead.preferredLocations!.isNotEmpty) {
       details.add(_buildDetailSection(
-        'Preferred Locations:',
-        lead.preferredLocations!.map((location) {
-          final latitude = location['latitude'];
-          final longitude = location['longitude'];
-          final description = location['description'];
-          final mapUrl =
-              'https://www.google.com/maps/search/$latitude,$longitude';
-
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.location_on, size: 20),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(description ?? 'No description',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      InkWell(
-                        onTap: () async {
-                          if (await canLaunch(mapUrl)) {
-                            await launch(mapUrl);
-                          } else {
-                            throw 'Could not launch $mapUrl';
-                          }
-                        },
-                        child: Text(
-                          'View on Map',
-                          style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-        context,
-      ));
+          'Preferred Locations:', _buildPreferredLocations(), context));
     }
 
     return details;
+  }
+
+  List<Widget> _buildPropertyDetails() {
+    return _getAllFields()
+        .where((field) => [
+              'Furnishing Type',
+              'Construction Status',
+              'Built Area (SFT)',
+              'Total Floors',
+              'Plot Width',
+              'Plot Length',
+              'Total Bedrooms',
+              'Master Bedrooms',
+              'Bathrooms',
+              'Balconies',
+              'External Maintenance Rating',
+              'Internal Maintenance Rating',
+              'Rough Address',
+              'Customer Visit Location',
+              'Visit Location (Lat/Lng)',
+              'Exact Address',
+              'Exact Visit Location (Lat/Lng)',
+              'Video Link',
+              'Description',
+              'Cost Price',
+              'Selling Price',
+              'Commission Percentage',
+              'Deadline to Sell',
+              'Total Floors in Apartment',
+              'Total Blocks in Apartment',
+              'Floor of Flat',
+              'Preferred Tenant',
+              'Preferred Advance',
+              'Property Rent',
+              'Age of Property',
+              'Facing',
+              'Area (SFT)'
+            ].contains(field))
+        .map((field) => _buildDetailRow(field))
+        .toList();
+  }
+
+  List<Widget> _buildBuyerDetails() {
+    return _getAllFields()
+        .where((field) => [
+              'Phone Number',
+              'Name',
+              'Number of Bedrooms',
+              'Also Want to Sell',
+              'Location',
+              'Location (Lat/Lng)',
+              'Budget',
+              'Email',
+              'Occupation',
+              'Comments',
+              'Property Type',
+              'Preferred Properties'
+            ].contains(field))
+        .map((field) => _buildDetailRow(field))
+        .toList();
+  }
+
+  List<Widget> _buildPreferredLocations() {
+    return widget.lead.preferredLocations!.map((location) {
+      final latitude = location['latitude'];
+      final longitude = location['longitude'];
+      final description = location['description'];
+      final mapUrl = 'https://www.google.com/maps/search/$latitude,$longitude';
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.location_on, size: 20),
+            SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(description ?? 'No description',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  InkWell(
+                    onTap: () async {
+                      if (await canLaunch(mapUrl)) {
+                        await launch(mapUrl);
+                      } else {
+                        throw 'Could not launch $mapUrl';
+                      }
+                    },
+                    child: Text(
+                      'View on Map',
+                      style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }).toList();
   }
 
   Widget _buildDetailSection(
@@ -314,38 +425,172 @@ class SummaryTab extends StatelessWidget {
               SizedBox(height: 16),
             ],
           )
-        : SizedBox
-            .shrink(); // Don't display the section if all widgets are empty
+        : SizedBox.shrink();
   }
 
-  Widget _buildDetailRow({
-    required IconData icon,
-    required String title,
-    String? value,
-  }) {
-    return value != null && value.isNotEmpty
-        ? Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              children: [
-                Icon(icon, size: 20),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text.rich(
+  List<String> _getSelectableFields() {
+    // List of fields to be excluded from "Select All"
+    final excludedFields = [
+      'External Maintenance Rating',
+      'Internal Maintenance Rating',
+      'Comments',
+      'Exact Address',
+      'Exact Visit Location (Lat/Lng)',
+      'Cost Price',
+      'Commission Percentage',
+      'Deadline to Sell',
+      // 'Phone Number',
+      // 'Name',
+      'Also Want to Sell',
+      'Location',
+      'Location (Lat/Lng)',
+      'Budget',
+      'Email',
+      'Occupation',
+      'Comments',
+      // 'Preferred Properties',
+      // Add any other fields you want to exclude
+    ];
+
+    return _getAllFields()
+        .where((field) => !excludedFields.contains(field))
+        .toList();
+  }
+
+  Widget _buildDetailRow(String field) {
+    IconData icon = Icons.info;
+    switch (field) {
+      case 'Furnishing Type':
+        icon = Icons.chair;
+        break;
+      case 'Construction Status':
+        icon = Icons.build;
+        break;
+      case 'Built Area (SFT)':
+      case 'Plot Width':
+      case 'Plot Length':
+      case 'Area (SFT)':
+        icon = Icons.square_foot;
+        break;
+      case 'Total Floors':
+      case 'Total Floors in Apartment':
+      case 'Floor of Flat':
+        icon = Icons.layers;
+        break;
+      case 'Total Bedrooms':
+      case 'Master Bedrooms':
+      case 'Number of Bedrooms':
+        icon = Icons.bed;
+        break;
+      case 'Bathrooms':
+        icon = Icons.bathtub;
+        break;
+      case 'Balconies':
+        icon = Icons.balcony;
+        break;
+      case 'External Maintenance Rating':
+      case 'Internal Maintenance Rating':
+        icon = Icons.star_border;
+        break;
+      case 'Rough Address':
+      case 'Customer Visit Location':
+      case 'Exact Address':
+      case 'Location':
+        icon = Icons.place;
+        break;
+      case 'Visit Location (Lat/Lng)':
+      case 'Exact Visit Location (Lat/Lng)':
+      case 'Location (Lat/Lng)':
+        icon = Icons.location_on;
+        break;
+      case 'Video Link':
+        icon = Icons.video_call;
+        break;
+      case 'Description':
+      case 'Comments':
+        icon = Icons.description;
+        break;
+      case 'Cost Price':
+      case 'Selling Price':
+      case 'Budget':
+      case 'Preferred Advance':
+      case 'Property Rent':
+        icon = Icons.attach_money;
+        break;
+      case 'Commission Percentage':
+        icon = Icons.percent;
+        break;
+      case 'Deadline to Sell':
+      case 'Age of Property':
+        icon = Icons.calendar_today;
+        break;
+      case 'Total Blocks in Apartment':
+        icon = Icons.apartment;
+        break;
+      case 'Preferred Tenant':
+        icon = Icons.person;
+        break;
+      case 'Facing':
+        icon = Icons.compass_calibration;
+        break;
+      case 'Phone Number':
+        icon = Icons.phone;
+        break;
+      case 'Name':
+        icon = Icons.person;
+        break;
+      case 'Also Want to Sell':
+        icon = Icons.sync;
+        break;
+      case 'Email':
+        icon = Icons.email;
+        break;
+      case 'Occupation':
+        icon = Icons.work;
+        break;
+      case 'Property Type':
+        icon = Icons.home;
+        break;
+      case 'Preferred Properties':
+        icon = Icons.favorite;
+        break;
+    }
+
+    final isSelectable = _getSelectableFields().contains(field);
+
+    return CheckboxListTile(
+        title: Row(
+          children: [
+            Icon(icon, size: 20),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text.rich(
+                TextSpan(
+                  children: [
                     TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '$title ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(text: value),
-                      ],
+                      text: '$field: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
+                    TextSpan(text: _getFieldValue(field)),
+                  ],
                 ),
-              ],
+              ),
             ),
-          )
-        : SizedBox.shrink();
+          ],
+        ),
+        value: selectedFields.contains(field),
+        onChanged: isSelectable
+            ? (bool? value) {
+                setState(() {
+                  if (value ?? false) {
+                    selectedFields.add(field);
+                  } else {
+                    selectedFields.remove(field);
+                  }
+                  selectAll =
+                      selectedFields.length == _getSelectableFields().length;
+                });
+              }
+            : null);
   }
 }

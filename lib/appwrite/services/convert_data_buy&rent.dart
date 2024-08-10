@@ -6,7 +6,7 @@ import '../../forms/models.dart';
 
 import 'package:dart_appwrite/dart_appwrite.dart';
 
-Future<Map<String, dynamic>> convertData1(
+Future<Map<dynamic, dynamic>> convertData1(
     data, leadtype, preferredProperties) async {
   // Convert 'facing' (list of Facing enums)
   List<Facing> facings = List<Facing>.from(data['facing']);

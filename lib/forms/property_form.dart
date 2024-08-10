@@ -189,6 +189,18 @@ class _PropertyFormScreenState extends ConsumerState<PropertyFormScreen> {
       }
     } else {
       // Handle sellTo and rentTo actions
+      if (formData.action == LeadAction.sellTo) {
+        var data1 =
+            await convertData1(data, 'buy', data['preferredProperties']);
+
+        await createBuyerLead(data1);
+      }
+      if (formData.action == LeadAction.rentTo) {
+        var data1 =
+            await convertData1(data, 'rent', data['preferredProperties']);
+
+        await createBuyerLead(data1);
+      }
     }
   }
 }

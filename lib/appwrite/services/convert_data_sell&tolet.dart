@@ -6,6 +6,20 @@ import '../../forms/models.dart';
 Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
     String leadtype, String sellRentProperties) async {
   // Ensure non-null values for seller details
+
+  final List<String> validStatusOptions = [
+    'leadReceived',
+    'mututalAgreementDone',
+    'rennovationDone',
+    'inMarket',
+    'tokenAmountGiven',
+    'primaryRegistrationDone',
+    'loanInProcess',
+    'registrationScheduled',
+    'finalRegistrationDone',
+    'commisionReceived',
+  ];
+
   var data2 = {
     'sellerName': data['ownerName'] ?? '',
     'sellerPhoneNumber': data['ownerPhoneNumber'] ?? '',
@@ -33,11 +47,12 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
   );
 
   // Convert 'facing' (list of Facing enums)
-  List<Facing> facings = (data['facing'] as List<dynamic>)
+  List<Facing> facings = ((data['facing'] as List<dynamic>?) ?? [])
       .map((e) => Facing.values.firstWhere(
           (f) => f.toString().split('.').last == e.toString(),
-          orElse: () => Facing.north)) // default to north if not found
+          orElse: () => Facing.north))
       .toList();
+
   List<String> facingValues = facings.map((f) => f.value).toList();
 
   ListedBy listedBy = ListedBy.values.firstWhere(
@@ -67,7 +82,7 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
     print('Error uploading photos: $e');
   }
 
-  List<PlatformFile> documents = (data['documents'] as List<dynamic>)
+  List<PlatformFile> documents = ((data['documents'] as List<dynamic>?) ?? [])
       .map((item) => item as PlatformFile)
       .toList();
 
@@ -78,6 +93,9 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
   } catch (e) {
     print('Error uploading documents: $e');
   }
+
+  String formattedLeadType =
+      leadtype.toLowerCase().contains('tolet') ? 'tolet' : 'sell';
 
   var data1 = {
     'ageOfProperty': double.tryParse(data['ageOfProperty'].toString()),
@@ -118,11 +136,13 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
     'exactVisitLng': double.tryParse(data['exactVisitLng'].toString()),
     'description': data['description'],
     'associateDetails': associateID,
-    'leadType': leadtype,
+    'leadType': formattedLeadType,
     'photoUrls': photoUrls,
     'documentUrls': documentUrls,
     'propertyTyp': sellRentProperties,
-    'status': 'Action Required'
+    'status': validStatusOptions.contains(data['status'])
+        ? data['status']
+        : 'leadReceived'
   };
 
   return data1;

@@ -99,6 +99,19 @@ extension PropertyVudaTypeExtension on PropertyVudaType {
 
 enum ListedBy { owner, dealer, agent, employee, ambassador, other }
 
+enum PropertyLeadStatus {
+  leadReceived,
+  mututalAgreementDone,
+  rennovationDone,
+  inMarket,
+  tokenAmountGiven,
+  primaryRegistrationDone,
+  loanInProcess,
+  registrationScheduled,
+  finalRegistrationDone,
+  commisionReceived
+}
+
 extension ListedByExtension on ListedBy {
   String get value {
     switch (this) {

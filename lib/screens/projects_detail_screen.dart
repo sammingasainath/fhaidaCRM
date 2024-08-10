@@ -41,7 +41,7 @@ class DetailsScreen extends StatelessWidget {
                   TasksTab(
                     lead: lead,
                   ),
-                  PaymentsTab(lead: lead),
+                  PropertyLeadEditPage(initialData: lead.toMap()),
                   FilesTab(
                     lead: lead,
                   ),
