@@ -69,6 +69,8 @@ dependencies:
   fan_carousel_image_slider: ^1.0.1
 
   telephony: ^0.2.0
+  flutter_phoenix: ^1.1.1
+  alarm: ^3.1.5
 
 dev_dependencies:
   flutter_test:

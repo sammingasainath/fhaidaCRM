@@ -4,7 +4,7 @@ import '../models/project.dart';
 import '../widgets/project_card_comprehensive.dart';
 import '../widgets/summary_tab.dart';
 import '../widgets/tasks_tab.dart';
-import '../widgets/payments_tab.dart';
+import '../widgets/edit_tab.dart';
 import '../widgets/files_tab.dart';
 
 class DetailsScreen extends StatelessWidget {

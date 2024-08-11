@@ -1,4 +1,5 @@
 import 'package:anucivil_client/providers/lead_card_compact_provider.dart';
+import 'package:anucivil_client/providers/navigation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/project_provider.dart';
@@ -13,6 +14,7 @@ import '../notifiers/last_selected_tab_notifier.dart';
 import '../widgets/lead_card.dart';
 import '../models/lead.dart';
 import '../widgets/schedule_visit_popup.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   @override
@@ -27,6 +29,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     super.initState();
     _searchController.addListener(() {
       ref.read(searchQueryProvider.notifier).state = _searchController.text;
+
+      // Trigger a refresh of the lead list
+      ref.read(leadListRefreshProvider.notifier).state++;
+      
+      // Update the selected index
     });
   }
 

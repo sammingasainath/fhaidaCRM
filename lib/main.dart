@@ -13,11 +13,14 @@ import 'package:anucivil_client/screens/signin_screen(new).dart';
 import 'package:anucivil_client/screens/signup_screen(new).dart';
 import 'package:anucivil_client/widgets/bottomNavbar.dart';
 import 'package:anucivil_client/providers/shared_provider.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:alarm/alarm.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Alarm.init();
 
-  runApp(ProviderScope(child: MyApp()));
+  runApp(Phoenix(child: ProviderScope(child: MyApp())));
 }
 
 class MyApp extends ConsumerWidget {

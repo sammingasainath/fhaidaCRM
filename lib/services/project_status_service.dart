@@ -47,7 +47,7 @@ class ProjectStatusService {
       case 'inNegotiation':
         return Colors.orange.shade400; // Warm orange for negotiation
       case 'sentOffer':
-        return Colors.amber.shade300; // Amber for offer sent
+        return const Color.fromARGB(255, 248, 211, 90); // Amber for offer sent
       case 'mututalAgreementDone':
         return Colors.teal.shade400; // Muted teal for agreement done
       case 'rennovationDone':
@@ -61,7 +61,8 @@ class ProjectStatusService {
       case 'primaryRegistrationDone':
         return Colors.indigo.shade400; // Indigo for primary registration done
       case 'loanInProcess':
-        return Colors.grey.shade700; // Darker grey for loan in process
+        return const Color.fromARGB(
+            255, 229, 134, 134); // Darker grey for loan in process
       case 'registrationScheduled':
         return Colors
             .lightBlue.shade400; // Light blue for registration scheduled
@@ -85,7 +86,7 @@ class ProjectStatusService {
       case 'inNegotiation':
         return Colors.orange.shade400;
       case 'sentOffer':
-        return Colors.amber.shade300;
+        return const Color.fromARGB(255, 182, 141, 7);
       case 'mututalAgreementDone':
         return Colors.teal.shade400;
       case 'rennovationDone':
@@ -97,7 +98,7 @@ class ProjectStatusService {
       case 'primaryRegistrationDone':
         return Colors.indigo.shade400;
       case 'loanInProcess':
-        return Colors.grey.shade700;
+        return const Color.fromARGB(255, 116, 4, 4);
       case 'registrationScheduled':
         return Colors.lightBlue.shade400;
       case 'finalRegistrationDone':

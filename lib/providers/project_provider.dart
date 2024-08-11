@@ -21,7 +21,10 @@ final projectRepositoryProvider = Provider<ProjectRepository>((ref) {
 });
 
 // Lead list provider
-final leadListProvider = FutureProvider<List<Lead>>((ref) {
+final leadListRefreshProvider = StateProvider((ref) => 0);
+
+final leadListProvider = FutureProvider<List<Lead>>((ref) async {
+  final refreshTrigger = ref.watch(leadListRefreshProvider);
   final repository = ref.read(projectRepositoryProvider);
   return repository.getLeads();
 });

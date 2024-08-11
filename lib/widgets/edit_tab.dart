@@ -1,13 +1,19 @@
+import 'package:anucivil_client/appwrite/services/convert_data_buy&rent%20%20without%20asso.dart';
+import 'package:anucivil_client/appwrite/services/convert_data_sell&tolet%20without%20Associate%20Details.dart';
 import 'package:anucivil_client/appwrite/services/convert_data_sell&tolet.dart';
 import 'package:anucivil_client/appwrite/services/crud_service.dart';
 import 'package:anucivil_client/models/lead.dart';
+import 'package:anucivil_client/providers/navigation_provider.dart';
+import 'package:anucivil_client/providers/project_provider.dart';
 import 'package:anucivil_client/services/sms_service.dart';
 import 'package:anucivil_client/utils/formatText.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../forms/models.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
-class PropertyLeadEditPage extends StatefulWidget {
+class PropertyLeadEditPage extends ConsumerStatefulWidget {
   final Map<String, dynamic> initialData;
 
   PropertyLeadEditPage({Key? key, required this.initialData}) : super(key: key);
@@ -16,7 +22,7 @@ class PropertyLeadEditPage extends StatefulWidget {
   _PropertyLeadEditPageState createState() => _PropertyLeadEditPageState();
 }
 
-class _PropertyLeadEditPageState extends State<PropertyLeadEditPage> {
+class _PropertyLeadEditPageState extends ConsumerState<PropertyLeadEditPage> {
   late Map<String, dynamic> _editedData;
   final _formKey = GlobalKey<FormState>();
 
@@ -149,7 +155,9 @@ class _PropertyLeadEditPageState extends State<PropertyLeadEditPage> {
                       _buildFilePickerField('Documents', 'documents'),
                       SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: _submitForm,
+                        onPressed: () async {
+                          await _submitForm(ref);
+                        },
                         child: Text('Save Changes'),
                       ),
                     ],
@@ -185,7 +193,9 @@ class _PropertyLeadEditPageState extends State<PropertyLeadEditPage> {
                       // _buildLocationPicker('Preferred Locations', 'preferredLocations'),
                       SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: _submitForm,
+                        onPressed: () async {
+                          await _submitForm(ref);
+                        },
                         child: Text('Save Changes'),
                       ),
                     ],
@@ -330,25 +340,75 @@ class _PropertyLeadEditPageState extends State<PropertyLeadEditPage> {
     );
   }
 
-  void _submitForm() async {
-    _editedData['photoUrls'] = widget.initialData['photoUrls'];
-    _editedData['documentUrls'] = widget.initialData['documentUrls'];
-
-    // Extract the leadType value correctly
-    String leadType =
-        widget.initialData['leadType'].toString().split('.').last.toLowerCase();
-    _editedData['leadType'] = leadType;
-
-    print(_editedData);
-
-    var data1 = await convertData(
-        _editedData, leadType, widget.initialData['propertyTyp']);
-    await updatePropertyLead(
-        data1, widget.initialData['id']); // Note: changed _editedData to data1
-
+  Future<void> _submitForm(WidgetRef ref) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // Additional logic if needed
+
+      _editedData['photoUrls'] = widget.initialData['photoUrls'];
+      _editedData['documentUrls'] = widget.initialData['documentUrls'];
+
+      String leadType = widget.initialData['leadType']
+          .toString()
+          .split('.')
+          .last
+          .toLowerCase();
+      _editedData['leadType'] = leadType;
+
+      if (leadType == 'sell' || leadType == 'tolet') {
+        try {
+          var data1 = await convertDataWithoutAsso(
+              _editedData, leadType, widget.initialData['propertyTyp']);
+          await updatePropertyLead(data1, widget.initialData['id']);
+
+          ref.read(projectRepositoryProvider);
+          ref.refresh(projectRepositoryProvider);
+          ref.read(selectedIndexProvider1.notifier).state = 0;
+
+          Navigator.pushNamed(context, '/dashboard');
+
+          // Refresh the project repository
+
+          // Show success message
+          Phoenix.rebirth(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Property lead updated successfully')),
+          );
+
+          // Navigate back
+        } catch (e) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error updating property lead: $e')),
+          );
+        }
+      } else {
+        try {
+          var data1 = await convertData1withoutasso(
+              _editedData, leadType, widget.initialData['preferredProperties']);
+          await updateBuyerLead(data1, widget.initialData['id']);
+
+          ref.read(projectRepositoryProvider);
+          ref.refresh(projectRepositoryProvider);
+          ref.read(selectedIndexProvider1.notifier).state = 0;
+
+          Navigator.pushNamed(context, '/dashboard');
+
+          // Refresh the project repository
+
+          // Show success message
+          Phoenix.rebirth(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Property lead updated successfully')),
+          );
+
+          // Navigate back
+        } catch (e) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error updating property lead: $e')),
+          );
+        }
+      }
     }
   }
 }
