@@ -1,20 +1,15 @@
-import 'package:anucivil_client/providers/lead_card_compact_provider.dart';
-import 'package:anucivil_client/providers/navigation_provider.dart';
+import 'package:anucivil_client/appwrite/services/crud_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/project_provider.dart';
 import '../notifiers/last_selected_tab_notifier.dart';
 import '../widgets/lead_card.dart';
 import '../models/lead.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/project_provider.dart';
-import '../notifiers/last_selected_tab_notifier.dart';
-import '../widgets/lead_card.dart';
-import '../models/lead.dart';
+import '../services/sms_service.dart';
 import '../widgets/schedule_visit_popup.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:alarm/alarm.dart';
+import 'dart:math';
+import 'package:intl/intl.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   @override
@@ -29,18 +24,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     super.initState();
     _searchController.addListener(() {
       ref.read(searchQueryProvider.notifier).state = _searchController.text;
-
-      // Trigger a refresh of the lead list
-      ref.read(leadListRefreshProvider.notifier).state++;
-      
-      // Update the selected index
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final lastSelectedTabIndex = ref.watch(lastSelectedTabProvider);
-    final showScheduleVisitButton = ref.watch(showScheduleVisitButtonProvider);
+    final lastSelectedTabIndex = ref.watch(lastSelectedTabProvider) ?? 0;
+    final showScheduleVisitButton =
+        ref.watch(showScheduleVisitButtonProvider) ?? false;
 
     return DefaultTabController(
       length: DashboardTab.values.length,
@@ -87,7 +78,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             Expanded(
               child: Consumer(
                 builder: (context, ref, _) {
-                  final selectedTab = ref.watch(dashboardTabProvider);
+                  final selectedTab =
+                      ref.watch(dashboardTabProvider) ?? DashboardTab.all;
                   return _buildTabContent(selectedTab, ref);
                 },
               ),
@@ -107,7 +99,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildTabContent(DashboardTab selectedTab, WidgetRef ref) {
     final leadListAsyncValue = ref.watch(filteredLeadListProvider);
-    final selectedLeads = ref.watch(selectedLeadsProvider);
+    final selectedLeads = ref.watch(selectedLeadsProvider) ?? [];
 
     return leadListAsyncValue.when(
       data: (leads) => ListView.builder(
@@ -127,48 +119,71 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
+  int generateUniqueId() {
+    final random = Random();
+    final timestamp = DateTime.now().millisecondsSinceEpoch & 0x3FFFFF;
+    final randomBits = random.nextInt(512);
+    return (timestamp << 9) | randomBits;
+  }
+
   void _showScheduleVisitPopup(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return ScheduleVisitPopup(
           onSchedule: (DateTime selectedDateTime) async {
-            final segregatedLeads = ref.read(segregatedSelectedLeadsProvider);
+            final segregatedLeads =
+                ref.read(segregatedSelectedLeadsProvider) ?? {};
             final eventService = ref.read(eventProvider);
-            List<String> buyerLeads = [];
-            List<String> propertyLeads = [];
+            List<String> buyerLeads = segregatedLeads['buyRent'] ?? [];
+            List<String> propertyLeads = segregatedLeads['sellToLet'] ?? [];
 
-            // Create events for buy/rent leads
-            if (segregatedLeads['buyRent']!.isNotEmpty) {
-              buyerLeads = segregatedLeads['buyRent']!;
-            }
-
-            // Create events for sell/tolet leads
-            if (segregatedLeads['sellToLet']!.isNotEmpty) {
-              propertyLeads = segregatedLeads['sellToLet']!;
-            }
-
-            // Clear selection and close popup
             ref.read(selectedLeadsProvider.notifier).clearSelection();
 
             try {
+              Navigator.pop(context);
+
+              for (var item in buyerLeads) {
+                var item1 = await readBuyerLead(item);
+                print(item1);
+
+                String formattedDateTime =
+                    DateFormat('MMMM d, yyyy h:mm a').format(selectedDateTime);
+                await SmsService.sendSms(
+                    message:
+                        'Hello ${item1['buyerName']}, Your Site Visit is booked with aastee.com for visiting properties on ${formattedDateTime}',
+                    recipient: item1['buyerPhoneNumber']);
+              }
               await eventService.createEventAndUpdateLeads(
                   selectedDateTime, buyerLeads, propertyLeads);
 
-              Navigator.of(context).pop();
-              // Navigator.pushNamed(context, '/dashboard'); // Close the dialog
+              final alarmSettings = AlarmSettings(
+                id: generateUniqueId(),
+                dateTime: selectedDateTime.subtract(Duration(minutes: 45)),
+                assetAudioPath: 'assets/alarm.mp3',
+                loopAudio: true,
+                vibrate: true,
+                volume: 1,
+                fadeDuration: 3.0,
+                notificationTitle: 'Site Visit in 45 minutes',
+                notificationBody: 'Check Your Calendars',
+                enableNotificationOnKill: true,
+              );
 
-              // Show success SnackBar
+              print(await Alarm.set(alarmSettings: alarmSettings));
+
+              Navigator.pushNamed(context, '/dashboard');
+
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Visit scheduled successfully!'),
                   backgroundColor: Colors.green,
                 ),
               );
             } catch (e) {
-              // Show error SnackBar
+              print(e);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Failed to schedule visit. Please try again.'),
                   backgroundColor: Colors.red,
                 ),

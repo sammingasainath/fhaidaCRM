@@ -1,3 +1,4 @@
+import 'package:anucivil_client/forms/models.dart';
 import 'package:anucivil_client/forms/property_form.dart';
 import 'package:anucivil_client/screens/dummy_profile.dart';
 import 'package:anucivil_client/widgets/daily_calendar_view.dart';
@@ -19,6 +20,18 @@ import 'package:alarm/alarm.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Alarm.init();
+
+  Alarm.ringStream.stream.listen((_) async {
+    // Handle the alarm ring event
+
+    Future.delayed(const Duration(milliseconds: 15000), () async {
+// Here you can write your code
+
+      await Alarm.stop(_.id);
+    });
+  });
+
+  LeadFormNotifier().updateAction(LeadAction.purchaseFrom);
 
   runApp(Phoenix(child: ProviderScope(child: MyApp())));
 }

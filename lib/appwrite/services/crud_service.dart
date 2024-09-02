@@ -58,6 +58,7 @@ Future<void> updatePropertyLead(var data, var id) async {
         collectionId: 'property_lead',
         documentId: id, // Replace with actual document ID
         data: data);
+
     print('Property Lead updated: ${document.$id}');
   } catch (e) {
     print('Error updating Property Lead: $e');
@@ -91,7 +92,7 @@ Future<void> createBuyerLead(var data) async {
   }
 }
 
-Future<void> readBuyerLead(var data) async {
+Future<Map<String, dynamic>> readBuyerLead(var data) async {
   try {
     final document = await databases.getDocument(
       databaseId: databaseId,
@@ -99,7 +100,9 @@ Future<void> readBuyerLead(var data) async {
       documentId: data, // Replace with actual document ID
     );
     print('Buyer Lead read: ${document.data}');
+    return document.data;
   } catch (e) {
+    return {};
     print('Error reading Buyer Lead: $e');
   }
 }

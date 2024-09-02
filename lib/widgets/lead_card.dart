@@ -1,14 +1,7 @@
 import 'package:anucivil_client/models/lead.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../models/project.dart';
-import '../services/project_status_service.dart';
-import '../widgets/circularProgressIndicator.dart';
-import '../screens/projects_detail_screen.dart';
 
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../models/lead.dart';
 import '../services/project_status_service.dart';
 import '../widgets/circularProgressIndicator.dart';
 import '../screens/projects_detail_screen.dart';
@@ -50,20 +43,21 @@ class LeadCard extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            _buildStatusIcon(lead.status!),
+                            _buildStatusIcon(lead.status ?? ''),
                             const SizedBox(width: 8.0),
                             Expanded(
                               child: (lead.leadType == LeadType.sell ||
                                       lead.leadType == LeadType.tolet)
                                   ? Text(
-                                      '${lead.numberOfBedrooms != null ? lead.totalBedrooms : ''} ${lead.totalBedrooms!.isNotEmpty ? lead.totalBedrooms : ''} BHK ${lead.propertyTyp}',
+                                      '${lead.numberOfBedrooms != null ? lead.totalBedrooms : ''} ${lead.totalBedrooms?.isNotEmpty == true ? lead.totalBedrooms : ''} BHK ${lead.propertyTyp ?? ''}',
                                       style: GoogleFonts.roboto(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
-                                      ))
+                                      ),
+                                    )
                                   : Text(
-                                      '${lead.buyerName != null ? lead.buyerName : ''} ${lead.buyerOccupation!.isNotEmpty ? lead.buyerOccupation : ''}  ${lead.preferredProperties}',
+                                      '${lead.buyerName ?? ''} ${lead.buyerOccupation?.isNotEmpty == true ? lead.buyerOccupation : ''} ${lead.preferredProperties ?? ''}',
                                       style: GoogleFonts.roboto(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -72,38 +66,39 @@ class LeadCard extends StatelessWidget {
                                     ),
                             ),
                             IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          DetailsScreen(lead: lead),
-                                    ),
-                                  );
-                                },
-                                icon: Icon(
-                                  Icons.arrow_circle_right_outlined,
-                                  size: 40,
-                                  color: Colors.blueAccent,
-                                ))
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DetailsScreen(lead: lead),
+                                  ),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.double_arrow_rounded,
+                                size: 32,
+                                color: Colors.blueAccent,
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(height: 8.0),
                         (lead.leadType == LeadType.sell ||
                                 lead.leadType == LeadType.tolet)
                             ? Text(
-                                'Area: ${lead.areaInSft} sft ',
+                                'Area: ${lead.areaInSft ?? ''} sft ',
                                 style: GoogleFonts.roboto(
                                   fontSize: 14,
                                   color: Colors.black54,
                                 ),
                               )
-                            : const SizedBox(height: 0.0),
+                            : const SizedBox.shrink(),
                         const SizedBox(height: 8.0),
                         (lead.leadType == LeadType.sell ||
                                 lead.leadType == LeadType.tolet)
                             ? Text(
-                                '${lead.roughAddress!.isEmpty ? '' : lead.roughAddress} ',
+                                '${lead.roughAddress?.isNotEmpty == true ? lead.roughAddress : ''} ',
                                 style: GoogleFonts.roboto(
                                   fontSize: 14,
                                   color: Colors.black54,
@@ -112,7 +107,7 @@ class LeadCard extends StatelessWidget {
                                 maxLines: 1,
                               )
                             : Text(
-                                '${lead.buyerComments!.isEmpty ? '' : lead.buyerComments} ',
+                                '${lead.buyerComments?.isNotEmpty == true ? lead.buyerComments : ''} ',
                                 style: GoogleFonts.roboto(
                                   fontSize: 14,
                                   color: Colors.black54,
@@ -134,11 +129,12 @@ class LeadCard extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '${(lead.leadType == LeadType.sell || lead.leadType == LeadType.tolet) ? (lead.sellingPrice == null) ? lead.sellingPrice : lead.propertyRent : lead.buyerBudget}',
+                                  '${(lead.leadType == LeadType.sell || lead.leadType == LeadType.tolet) ? lead.sellingPrice ?? lead.propertyRent ?? '' : lead.buyerBudget ?? ''}',
                                   style: GoogleFonts.roboto(
                                     fontSize: 14,
                                     color: ProjectStatusService
-                                        .getColorBasedOnStatus(lead.status!,
+                                        .getColorBasedOnStatus(
+                                            lead.status ?? '',
                                             isAmount: true),
                                   ),
                                 ),
@@ -156,15 +152,16 @@ class LeadCard extends StatelessWidget {
                                           color: Colors.black,
                                         ),
                                       )
-                                    : const SizedBox(height: 0.0),
+                                    : const SizedBox.shrink(),
                                 if (lead.leadType == LeadType.sell ||
                                     lead.leadType == LeadType.tolet)
                                   Text(
-                                    '${lead.deadlineToSell != null ? lead.deadlineToSell : ''}',
+                                    lead.deadlineToSell ?? '',
                                     style: GoogleFonts.roboto(
                                       fontSize: 14,
                                       color: ProjectStatusService
-                                          .getColorBasedOnStatus(lead.status!,
+                                          .getColorBasedOnStatus(
+                                              lead.status ?? '',
                                               isAmount: false),
                                     ),
                                   ),
@@ -175,7 +172,7 @@ class LeadCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  _buildStatusBar(lead.status!),
+                  _buildStatusBar(lead.status ?? ''),
                 ],
               ),
               if (isSelected)

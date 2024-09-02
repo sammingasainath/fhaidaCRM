@@ -275,12 +275,26 @@ class _PropertyLeadEditPageState extends ConsumerState<PropertyLeadEditPage> {
   }
 
   Widget _buildSliderFormField(String label, String field) {
+    double _parseDouble(String? value) {
+      if (value == null || value.isEmpty) {
+        return 0.0; // or handle as needed
+      }
+      try {
+        return double.parse(value);
+      } catch (e) {
+        // Handle parsing error, log it or use a default value
+        return 0.0; // or handle as needed
+      }
+    }
+
+    double parsedValue = _parseDouble(_editedData[field]);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label),
         Slider(
-          value: double.parse(_editedData[field]?.toString() ?? '0'),
+          value: _parseDouble(_editedData[field]),
           min: 0,
           max: 10,
           divisions: 10,

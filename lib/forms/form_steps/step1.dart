@@ -9,6 +9,8 @@ class Step1Form extends ConsumerWidget {
     final formNotifier = ref.read(LeadFormProvider.notifier);
     final selectedAction = ref.watch(LeadFormProvider).action;
 
+    LeadFormNotifier().updateAction(LeadAction.purchaseFrom);
+
     // Simplified action representations
     final List<Map<String, dynamic>> actions = [
       {
