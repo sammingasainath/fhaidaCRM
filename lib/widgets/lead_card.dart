@@ -4,7 +4,7 @@ import 'package:intl/intl.dart'; // Add this import for date formatting
 import '../services/project_status_service.dart';
 import '../widgets/circularProgressIndicator.dart';
 import '../screens/projects_detail_screen.dart';
-import 'package:anucivil_client/models/lead.dart';
+import 'package:fhaidaCrm/models/lead.dart';
 
 class LeadCard extends StatefulWidget {
   final Lead lead;

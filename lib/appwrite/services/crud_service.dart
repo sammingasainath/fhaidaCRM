@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
 import 'package:dart_appwrite/models.dart' as models;
-import 'package:anucivil_client/models/lead.dart';
+import 'package:fhaidaCrm/models/lead.dart';
 import 'dart:io' as io;
 
 List<models.Document> events = [];

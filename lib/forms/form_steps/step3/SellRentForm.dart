@@ -1,5 +1,5 @@
-import 'package:anucivil_client/forms/maps_functionality/place_search.dart';
-import 'package:anucivil_client/widgets/facingMultiSelect.dart';
+import 'package:fhaidaCrm/forms/maps_functionality/place_search.dart';
+import 'package:fhaidaCrm/widgets/facingMultiSelect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models.dart';

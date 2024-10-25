@@ -1,10 +1,10 @@
-import 'package:anucivil_client/widgets/event_card.dart';
+import 'package:fhaidaCrm/widgets/event_card.dart';
 import 'package:dart_appwrite/dart_appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-import 'package:anucivil_client/appwrite/services/crud_service.dart';
-import 'package:anucivil_client/models/lead.dart';
+import 'package:fhaidaCrm/appwrite/services/crud_service.dart';
+import 'package:fhaidaCrm/models/lead.dart';
 
 class EventCalendarView extends StatefulWidget {
   @override

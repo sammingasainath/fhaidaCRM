@@ -1,4 +1,4 @@
-import 'package:anucivil_client/utils/formatText.dart';
+import 'package:fhaidaCrm/utils/formatText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models.dart';

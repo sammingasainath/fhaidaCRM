@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:appwrite/appwrite.dart';
-import 'package:anucivil_client/providers/shared_provider.dart';
+import 'package:fhaidaCrm/providers/shared_provider.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   @override

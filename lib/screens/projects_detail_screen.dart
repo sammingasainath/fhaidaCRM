@@ -1,4 +1,4 @@
-import 'package:anucivil_client/models/lead.dart';
+import 'package:fhaidaCrm/models/lead.dart';
 import 'package:flutter/material.dart';
 import '../models/project.dart';
 import '../widgets/project_card_comprehensive.dart';

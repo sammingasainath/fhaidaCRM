@@ -1,10 +1,10 @@
-import 'package:anucivil_client/appwrite/services/convert_property_data_without_asso_while_edit.dart';
-import 'package:anucivil_client/models/lead.dart';
-import 'package:anucivil_client/services/file_fetcher.dart';
-import 'package:anucivil_client/widgets/AssoOwnerdetailCard.dart';
+import 'package:fhaidaCrm/appwrite/services/convert_property_data_without_asso_while_edit.dart';
+import 'package:fhaidaCrm/models/lead.dart';
+import 'package:fhaidaCrm/services/file_fetcher.dart';
+import 'package:fhaidaCrm/widgets/AssoOwnerdetailCard.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:anucivil_client/appwrite/services/crud_service.dart';
+import 'package:fhaidaCrm/appwrite/services/crud_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'dart:io';
@@ -12,8 +12,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import '../forms/models.dart';
-import 'package:anucivil_client/providers/navigation_provider.dart';
-import 'package:anucivil_client/providers/project_provider.dart';
+import 'package:fhaidaCrm/providers/navigation_provider.dart';
+import 'package:fhaidaCrm/providers/project_provider.dart';
 import 'dart:developer';
 
 class FilesTab extends ConsumerStatefulWidget {

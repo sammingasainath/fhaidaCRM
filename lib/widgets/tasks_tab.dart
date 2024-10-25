@@ -1,6 +1,6 @@
-import 'package:anucivil_client/appwrite/services/crud_service.dart';
-import 'package:anucivil_client/widgets/lead_card.dart';
-import 'package:anucivil_client/widgets/lead_card_compact.dart';
+import 'package:fhaidaCrm/appwrite/services/crud_service.dart';
+import 'package:fhaidaCrm/widgets/lead_card.dart';
+import 'package:fhaidaCrm/widgets/lead_card_compact.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/lead.dart';

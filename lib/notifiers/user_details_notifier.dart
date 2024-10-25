@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
-// import 'package:anucivil_client/providers/shared_provider.dart';
+// import 'package:fhaidaCrm/providers/shared_provider.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:anucivil_client/services/user_details_service.dart';
+// import 'package:fhaidaCrm/services/user_details_service.dart';
 // import '/providers/shared_provider.dart';
 
 // final userDetailsNotifierProvider =

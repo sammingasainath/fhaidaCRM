@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:appwrite/appwrite.dart';
-import 'package:anucivil_client/providers/shared_provider.dart';
+import 'package:fhaidaCrm/providers/shared_provider.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   @override
@@ -24,13 +24,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           password: _passwordController.text,
           name: _nameController.text,
         );
-        
+
         // Use createSession instead of createEmailSession
         await account.createEmailPasswordSession(
           email: _emailController.text,
           password: _passwordController.text,
         );
-        
+
         Navigator.pushReplacementNamed(context, '/dashboard');
       } on AppwriteException catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(

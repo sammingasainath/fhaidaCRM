@@ -1,8 +1,8 @@
-import 'package:anucivil_client/appwrite/services/convert_data_buy&rent.dart';
-import 'package:anucivil_client/appwrite/services/convert_data_sell&tolet.dart';
-import 'package:anucivil_client/appwrite/services/crud_service.dart';
-import 'package:anucivil_client/appwrite/services/save_contact.dart';
-import 'package:anucivil_client/providers/project_provider.dart';
+import 'package:fhaidaCrm/appwrite/services/convert_data_buy&rent.dart';
+import 'package:fhaidaCrm/appwrite/services/convert_data_sell&tolet.dart';
+import 'package:fhaidaCrm/appwrite/services/crud_service.dart';
+import 'package:fhaidaCrm/appwrite/services/save_contact.dart';
+import 'package:fhaidaCrm/providers/project_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/navigation_provider.dart';

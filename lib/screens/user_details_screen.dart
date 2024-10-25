@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:anucivil_client/notifiers/user_details_notifier.dart';
+import 'package:fhaidaCrm/notifiers/user_details_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Assuming you're using Firebase for authentication
 
 class UserDetailsScreen extends ConsumerStatefulWidget {

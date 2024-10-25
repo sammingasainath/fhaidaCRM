@@ -1,4 +1,4 @@
-name: anucivil_client
+name: fhaidaCrm
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -74,6 +74,18 @@ dependencies:
   uuid: ^4.4.2
   contacts_service: ^0.6.3
   permission_handler: ^11.3.1
+  flutter_launcher_icons: ^0.14.1
+
+
+flutter_launcher_icons:
+  android: "launcher_icon"  # Icon name for Android
+  ios: true  # Creates iOS icons
+  image_path: "assets/logo.png"  # Path to your icon image
+  min_sdk_android: 21  # Android min sdk
+  
+  # Optional: If you want adaptive icons (Android 8.0 or higher)
+  adaptive_icon_background: "#ffffff"  # Color or path to background image
+  adaptive_icon_foreground: "assets/logo.png" 
 
 
 dev_dependencies:
@@ -103,6 +115,7 @@ flutter:
   assets:
     - assets/shovel.svg
     - assets/alarm.mp3
+    - assets/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

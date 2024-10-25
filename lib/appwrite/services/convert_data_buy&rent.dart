@@ -1,4 +1,4 @@
-import 'package:anucivil_client/appwrite/services/crud_service.dart';
+import 'package:fhaidaCrm/appwrite/services/crud_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
