@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:anucivil_client/screens/dummy_chat_screen.dart';
 import 'package:anucivil_client/screens/dummy_feed.dart';
-import 'package:anucivil_client/screens/project_details_form.dart';
+
 import 'package:anucivil_client/screens/user_details_screen.dart';
 import 'package:anucivil_client/screens/splash_screen.dart';
 import 'package:anucivil_client/screens/dashboard_screen.dart';
@@ -37,7 +37,7 @@ void main() async {
 }
 
 class MyApp extends ConsumerWidget {
-  @override
+  @override  
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
 

@@ -95,10 +95,22 @@ class SellRentForm extends ConsumerWidget {
         ),
 
         TextFormField(
-          decoration: InputDecoration(labelText: 'Phone Number'),
+          decoration: InputDecoration(
+            labelText: 'Phone Number',
+            errorStyle: TextStyle(color: Colors.red),
+          ),
           keyboardType: TextInputType.phone,
           onChanged: (value) =>
               formNotifier.updateLeadDetails({'buyerPhoneNumber': value}),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Phone number is required';
+            }
+            if (!RegExp(r'^\d+$').hasMatch(value)) {
+              return 'Enter a valid phone number';
+            }
+            return null; // Return null if validation passes
+          },
         ),
 
         TextFormField(

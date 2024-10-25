@@ -67,7 +67,7 @@ class LeadCardComponent extends StatelessWidget {
                                               color: Colors.black,
                                             ))
                                         : Text(
-                                            '${lead.buyerName != null ? lead.buyerName : ''} ${lead.buyerOccupation!.isNotEmpty ? lead.buyerOccupation : ''}  ${lead.preferredProperties}',
+                                            '${lead.buyerName != null ? lead.buyerName : ''} ${lead.buyerOccupation != null ? lead.buyerOccupation : ''}  ${lead.preferredProperties}',
                                             style: GoogleFonts.roboto(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
@@ -258,7 +258,7 @@ class LeadCardComponent extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                ],
+                                  ],
                                 ),
                               ],
                             ),

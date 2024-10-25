@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import '../models/lead.dart';
 import '../widgets/event_card.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'call_to_action_container.dart';
 
 class TasksTab extends StatelessWidget {
   final Lead lead;

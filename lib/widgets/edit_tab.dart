@@ -1,6 +1,7 @@
 import 'package:anucivil_client/appwrite/services/convert_data_buy&rent%20%20without%20asso.dart';
 import 'package:anucivil_client/appwrite/services/convert_data_sell&tolet%20without%20Associate%20Details.dart';
 import 'package:anucivil_client/appwrite/services/convert_data_sell&tolet.dart';
+import 'package:anucivil_client/appwrite/services/convert_property_data_without_asso_while_edit.dart';
 import 'package:anucivil_client/appwrite/services/crud_service.dart';
 import 'package:anucivil_client/models/lead.dart';
 import 'package:anucivil_client/providers/navigation_provider.dart';
@@ -12,6 +13,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../forms/models.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'dart:developer';
 
 class PropertyLeadEditPage extends ConsumerStatefulWidget {
   final Map<String, dynamic> initialData;
@@ -30,6 +32,8 @@ class _PropertyLeadEditPageState extends ConsumerState<PropertyLeadEditPage> {
   void initState() {
     super.initState();
     _editedData = Map.from(widget.initialData);
+    print(_editedData);
+    log(_editedData.toString());
     print(widget.initialData['leadType']);
   }
 
@@ -54,9 +58,6 @@ class _PropertyLeadEditPageState extends ConsumerState<PropertyLeadEditPage> {
                       Text('Edit Property'),
                       _buildDropdownFormField(
                           'Lead Status', 'status', PropertyLeadStatus.values),
-                      _buildTextFormField('Owner Name', 'ownerName'),
-                      _buildTextFormField(
-                          'Owner Phone Number', 'ownerPhoneNumber'),
                       _buildSwitchFormField(
                           'Also Want To Buy', 'alsoWantToBuy'),
                       if (widget.initialData['propertyTyp'] == 'house' ||
@@ -146,13 +147,6 @@ class _PropertyLeadEditPageState extends ConsumerState<PropertyLeadEditPage> {
                       _buildTextFormField(
                           'Exact Visit Longitude', 'exactVisitLng'),
                       _buildTextFormField('Description', 'description'),
-                      _buildDropdownFormField(
-                          'Listed By', 'listedBy', ListedBy.values),
-                      _buildTextFormField('Associate Name', 'associateName'),
-                      _buildTextFormField(
-                          'Associate Number', 'associateNumber'),
-                      _buildFilePickerField('Photos', 'photos'),
-                      _buildFilePickerField('Documents', 'documents'),
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () async {
@@ -161,6 +155,17 @@ class _PropertyLeadEditPageState extends ConsumerState<PropertyLeadEditPage> {
                         child: Text('Save Changes'),
                       ),
                     ],
+
+                    //  _buildTextFormField1('Owner Name', 'sellerName'),
+                    //     _buildTextFormField1(
+                    //         'Owner Phone Number', 'sellerPhoneNumber'),
+                    //  _buildDropdownFormField(
+                    //     'Listed By', 'listedBy', ListedBy.values),
+                    // _buildTextFormField('Associate Name', 'associateName'),
+                    // _buildTextFormField(
+                    //     'Associate Number', 'associateNumber'),
+                    // _buildFilePickerField('Photos', 'photos'),
+                    // _buildFilePickerField('Documents', 'documents'),
                   )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,20 +190,21 @@ class _PropertyLeadEditPageState extends ConsumerState<PropertyLeadEditPage> {
                       _buildTextFormField('Buyer Comments', 'buyerComments'),
                       _buildMultiSelectFormField(
                           'Facing', 'facing', Facing.values),
-                      _buildDropdownFormField(
-                          'Listed By', 'listedBy', ListedBy.values),
-                      _buildTextFormField('Associate Name', 'associateName'),
-                      _buildTextFormField(
-                          'Associate Number', 'associateNumber'),
+
                       // _buildLocationPicker('Preferred Locations', 'preferredLocations'),
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () async {
                           await _submitForm(ref);
                         },
-                        child: Text('Save Changes'),
+                        child: Center(child: Text('Save Changes')),
                       ),
                     ],
+                    // _buildDropdownFormField(
+                    //       'Listed By', 'listedBy', ListedBy.values),
+                    //   _buildTextFormField('Associate Name', 'associateName'),
+                    //   _buildTextFormField(
+                    //       'Associate Number', 'associateNumber'),
                   ),
           ),
         ),
@@ -370,8 +376,10 @@ class _PropertyLeadEditPageState extends ConsumerState<PropertyLeadEditPage> {
 
       if (leadType == 'sell' || leadType == 'tolet') {
         try {
-          var data1 = await convertDataWithoutAsso(
+          var data1 = await convertDataWithoutAsso2(
               _editedData, leadType, widget.initialData['propertyTyp']);
+
+          print(data1);
           await updatePropertyLead(data1, widget.initialData['id']);
 
           ref.read(projectRepositoryProvider);

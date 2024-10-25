@@ -8,7 +8,7 @@ class Lead {
   final LeadType leadType;
 
   // Common fields
-  // final String? associateDetailsId;
+  final Map<String, dynamic>? associateDetails;
   final String? status;
 
   // Property Lead fields
@@ -44,7 +44,7 @@ class Lead {
   final String? preferredTenant;
   final double? preferredAdvance;
   final double? propertyRent;
-  // final String? ownerDetailsId;
+  final Map<String, dynamic>? ownerDetails;
   final double? ageOfProperty;
   final List<String>? facing;
   final String? areaInSft;
@@ -72,7 +72,7 @@ class Lead {
   Lead(
       {required this.id,
       required this.leadType,
-      // this.associateDetailsId,
+      this.associateDetails,
       this.status,
       this.furnishingType,
       this.constructionStatus,
@@ -106,7 +106,7 @@ class Lead {
       this.preferredTenant,
       this.preferredAdvance,
       this.propertyRent,
-      // this.ownerDetailsId,
+      this.ownerDetails,
       this.ageOfProperty,
       this.facing,
       this.areaInSft,
@@ -183,6 +183,8 @@ class Lead {
       'buyerLng': buyerLng,
       'buyerBudget': buyerBudget,
       'buyerEmail': buyerEmail,
+      'ownerDetails': ownerDetails,
+      'associateDetails': associateDetails,
       'buyerOccupation': buyerOccupation,
       'buyerComments': buyerComments,
       'preferredLocations': preferredLocations,
@@ -204,8 +206,7 @@ class Lead {
                   : map['leadType'] == 'tolet'
                       ? LeadType.tolet
                       : throw ArgumentError('Invalid leadType value'),
-
-      // associateDetails: map['associateDetails'] as Map<String, dynamic>?,
+      associateDetails: map['associateDetails'] as Map<String, dynamic>?,
       status: map['status'] as String?,
       furnishingType: map['furnishingType'] as String?,
       constructionStatus: map['constructionStatus'] as String?,
@@ -239,7 +240,7 @@ class Lead {
       preferredTenant: map['preferredTenant'] as String?,
       preferredAdvance: _parseDouble(map['preferredAdvance']),
       propertyRent: _parseDouble(map['propertyRent']),
-      // ownerDetails: map['ownerDetails'] as Map<String, dynamic>?,
+      ownerDetails: map['ownerDetails'] as Map<String, dynamic>?,
       ageOfProperty: _parseDouble(map['ageOfProperty']),
       facing: (map['facing'] as List<dynamic>?)?.cast<String>(),
       areaInSft: map['areaInSft'] as String?,

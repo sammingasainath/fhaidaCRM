@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/lead.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'call_to_action_container.dart';
+
 
 class EventCard extends StatefulWidget {
   final Map<String, dynamic> event;

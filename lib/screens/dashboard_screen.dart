@@ -131,7 +131,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       context: context,
       builder: (BuildContext context) {
         return ScheduleVisitPopup(
-          onSchedule: (DateTime selectedDateTime) async {
+          onSchedule:
+              (DateTime selectedDateTime, Duration reminderDuration) async {
             final segregatedLeads =
                 ref.read(segregatedSelectedLeadsProvider) ?? {};
             final eventService = ref.read(eventProvider);
@@ -141,7 +142,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ref.read(selectedLeadsProvider.notifier).clearSelection();
 
             try {
-              Navigator.pop(context);
+              // Navigator.pop(context);
 
               for (var item in buyerLeads) {
                 var item1 = await readBuyerLead(item);
@@ -159,20 +160,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
               final alarmSettings = AlarmSettings(
                 id: generateUniqueId(),
-                dateTime: selectedDateTime.subtract(Duration(minutes: 45)),
+                dateTime: selectedDateTime.subtract(reminderDuration),
                 assetAudioPath: 'assets/alarm.mp3',
                 loopAudio: true,
                 vibrate: true,
                 volume: 1,
                 fadeDuration: 3.0,
-                notificationTitle: 'Site Visit in 45 minutes',
+                notificationTitle:
+                    'Site Visit in ${reminderDuration.inMinutes} minutes',
                 notificationBody: 'Check Your Calendars',
                 enableNotificationOnKill: true,
               );
 
               print(await Alarm.set(alarmSettings: alarmSettings));
-
-              Navigator.pushNamed(context, '/dashboard');
 
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -180,6 +180,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   backgroundColor: Colors.green,
                 ),
               );
+
+              Navigator.pushNamed(context, '/dashboard');
             } catch (e) {
               print(e);
               ScaffoldMessenger.of(context).showSnackBar(

@@ -409,6 +409,8 @@ Future<String> uploadFile(String filePath, String bucketId) async {
   }
 }
 
+//functions for uploading documents
+
 Future<List<String>> uploadFiles(
     List<String> filePaths, String bucketId) async {
   List<String> fileUrls = [];

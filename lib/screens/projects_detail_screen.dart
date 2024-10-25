@@ -26,10 +26,10 @@ class DetailsScreen extends StatelessWidget {
             TabBar(
               indicatorColor: Color(0xff7F56D9),
               tabs: [
-                Tab(text: 'Summary'),
-                Tab(text: 'Tasks'),
-                Tab(text: 'Payments'),
-                Tab(text: 'Files'),
+                Tab(text: 'Info'),
+                Tab(text: 'Visits'),
+                Tab(text: 'Edit'),
+                Tab(text: 'Extras'),
               ],
             ),
             Expanded(
@@ -50,6 +50,9 @@ class DetailsScreen extends StatelessWidget {
             ),
           ],
         ),
+        // body: SingleChildScrollView(
+        //   child: Text(lead.toMap().toString()),
+        // ),
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'package:file_picker/file_picker.dart';
 
 import '../../forms/models.dart';
 
-Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
+Future<Map<String, dynamic>> convertDataWithoutAsso2(Map<String, dynamic> data,
     String leadtype, String sellRentProperties) async {
   // Ensure non-null values for seller details
 
@@ -20,19 +20,19 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
     'commisionReceived',
   ];
 
-  var data2 = {
-    'sellerName': data['ownerName'] ?? '',
-    'sellerPhoneNumber': data['ownerPhoneNumber'] ?? '',
-    'alsoWantToBuy': data['alsoWantToBuy'] ?? false, // Ensure boolean value
-  };
+  // var data2 = {
+  //   'sellerName': data['ownerName'] ?? '',
+  //   'sellerPhoneNumber': data['ownerPhoneNumber'] ?? '',
+  //   'alsoWantToBuy': data['alsoWantToBuy'] ?? false, // Ensure boolean value
+  // };
 
-  var sellerID;
-  try {
-    sellerID = await createSellerDetails(data2);
-    print('Seller Details created: $sellerID');
-  } catch (e) {
-    print('Error creating Seller Details: $e');
-  }
+  // var sellerID;
+  // try {
+  //   sellerID = await createSellerDetails(data2);
+  //   print('Seller Details created: $sellerID');
+  // } catch (e) {
+  //   print('Error creating Seller Details: $e');
+  // }
 
   // Convert and handle enum values
   FurnishingType furnishingType = FurnishingType.values.firstWhere(
@@ -53,8 +53,6 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
           orElse: () => Facing.north))
       .toList();
 
-  //Facings can be multiple so , we are converting the facings into a list
-
   List<String> facingValues = facings.map((f) => f.value).toList();
 
   ListedBy listedBy = ListedBy.values.firstWhere(
@@ -62,42 +60,30 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
     orElse: () => ListedBy.agent, // default value if not found
   );
 
-  var data3 = {
-    'assoName': data['associateName'] ?? '',
-    'assoPhone': data['associateNumber'] ?? '',
-    'associateType': listedBy.toString().split('.').last,
-  };
+  // var data3 = {
+  //   'assoName': data['associateName'] ?? '',
+  //   'assoPhone': data['associateNumber'] ?? '',
+  //   'associateType': listedBy.toString().split('.').last,
+  // };
 
-  var associateID;
-  try {
-    associateID = await createAssociateDetails(data3);
-    print('Associate Details created: $associateID');
-  } catch (e) {
-    print('Error creating Associate Details: $e');
-  }
+  // var associateID;
+  // try {
+  //   associateID = await createAssociateDetails(data3);
+  //   print('Associate Details created: $associateID');
+  // } catch (e) {
+  //   print('Error creating Associate Details: $e');
+  // }
 
-  List<String> photoUrls = [];
-  try {
-    photoUrls = await uploadFiles(data['photos'] ?? [], '66a9e5990027b4011eb6');
-    print(photoUrls);
-  } catch (e) {
-    print('Error uploading photos: $e');
-  }
+  List<String> photoUrls = data['photoUrls'];
 
-  List<PlatformFile> documents = ((data['documents'] as List<dynamic>?) ?? [])
-      .map((item) => item as PlatformFile)
-      .toList();
+  List<String> documentUrls = data['documentUrls'];
 
-  List<String> documentUrls = [];
-  try {
-    documentUrls = await uploadPlatformFiles(documents, '66a9e5c90002d611a9db');
-    print(documentUrls);
-  } catch (e) {
-    print('Error uploading documents: $e');
-  }
+  print('$leadtype');
 
   String formattedLeadType =
       leadtype.toLowerCase().contains('tolet') ? 'tolet' : 'sell';
+
+  print('$formattedLeadType');
 
   var data1 = {
     'ageOfProperty': double.tryParse(data['ageOfProperty'].toString()),
@@ -123,7 +109,7 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
     'commissionPercentage':
         double.tryParse(data['commissionPercentage'].toString()),
     'deadlineToSell': data['deadlineToSell'].toString(),
-    'ownerDetails': sellerID,
+    // 'ownerDetails': sellerID,
     'builtAreaInSft': data['builtAreaInSft'].toString(),
     'widthOfPlot': data['widthOfPlot'].toString(),
     'lengthOfPlot': data['lengthOfPlot'].toString(),
@@ -137,7 +123,7 @@ Future<Map<String, dynamic>> convertData(Map<String, dynamic> data,
     'exactVisitLat': double.tryParse(data['exactVisitLat'].toString()),
     'exactVisitLng': double.tryParse(data['exactVisitLng'].toString()),
     'description': data['description'],
-    'associateDetails': associateID,
+    // 'associateDetails': associateID,
     'leadType': formattedLeadType,
     'photoUrls': photoUrls,
     'documentUrls': documentUrls,

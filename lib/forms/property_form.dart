@@ -1,6 +1,7 @@
 import 'package:anucivil_client/appwrite/services/convert_data_buy&rent.dart';
 import 'package:anucivil_client/appwrite/services/convert_data_sell&tolet.dart';
 import 'package:anucivil_client/appwrite/services/crud_service.dart';
+import 'package:anucivil_client/appwrite/services/save_contact.dart';
 import 'package:anucivil_client/providers/project_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -173,9 +174,14 @@ class _PropertyFormScreenState extends ConsumerState<PropertyFormScreen> {
           data1 = await convertData(data, 'tolet', sellRentProperties);
         }
 
+        setState(() {
+          _isLoading = true;
+        });
+
         await createPropertyLead(data1);
         LeadFormNotifier().clearLeadDetails();
         print('Form submitted');
+
         LeadFormNotifier().clearLeadDetails();
 
         ref.read(leadListRefreshProvider.notifier).state++;
@@ -190,16 +196,78 @@ class _PropertyFormScreenState extends ConsumerState<PropertyFormScreen> {
     } else {
       // Handle sellTo and rentTo actions
       if (formData.action == LeadAction.sellTo) {
-        var data1 =
-            await convertData1(data, 'buy', data['preferredProperties']);
+        print(data);
+        print(data);
+        print(formData.propertyTypes);
+        print(formData.propertyTypes.toList());
+        print(formData.propertyTypes.toList().toString());
+        var data1 = await convertData1(
+          data,
+          'buy',
+          formData.propertyTypes
+              .map((propertyType) => propertyType.name)
+              .toList(),
+        );
+        setState(() {
+          _isLoading = true;
+        });
+
+        saveContact(
+            data1['numberOfBedrooms'].toString(),
+            '${data1['preferredProperties']} ${data1['buyerComments']} ${data1['buyerOccupation']}',
+            data1['facing'].toString(),
+            '${data1['buyerName']} Ast Buyer',
+            data1['buyerOccupation'],
+            data1['buyerOccupation'],
+            data1['buyerPhoneNumber'],
+            'Mobile');
 
         await createBuyerLead(data1);
+        LeadFormNotifier().clearLeadDetails();
+        print('Form submitted');
+
+        LeadFormNotifier().clearLeadDetails();
+
+        ref.read(leadListRefreshProvider.notifier).state++;
+        ref.read(selectedIndexProvider1.notifier).state = 0;
       }
       if (formData.action == LeadAction.rentTo) {
-        var data1 =
-            await convertData1(data, 'rent', data['preferredProperties']);
+        print(data);
+        print(formData.propertyTypes);
+        print(formData.propertyTypes.toList());
+        print(formData.propertyTypes.toList().toString());
+
+        print(data['leadDetails']);
+        var data1 = await convertData1(
+          data,
+          'rent',
+          formData.propertyTypes
+              .map((propertyType) => propertyType.name)
+              .toList(),
+        );
+
+        setState(() {
+          _isLoading = true;
+        });
+        saveContact(
+            '${data1['buyerName']} Ast Rent',
+            data1['numberOfBedrooms'],
+            '${data1['preferredProperties']}} ${data1['buyerComments']}  ${data1['buyerOccupation']}',
+            data1['facing'],
+            data1['buyerOccupation'],
+            data1['buyerOccupation'],
+            data1['buyerPhoneNumber'],
+            'Mobile');
 
         await createBuyerLead(data1);
+
+        LeadFormNotifier().clearLeadDetails();
+
+        print('Form submitted');
+        LeadFormNotifier().clearLeadDetails();
+
+        ref.read(leadListRefreshProvider.notifier).state++;
+        ref.read(selectedIndexProvider1.notifier).state = 0;
       }
     }
   }
